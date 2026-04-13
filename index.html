@@ -1028,6 +1028,108 @@ table.matrix tbody td:first-child {
   }
   .avoid-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ============================================================
+   MOBILE (≤768px) — surgical overhaul
+   Goal: keep snap-scrolling, fix spacing, allow tall slides
+   to scroll INTERNALLY within their snap point.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* A. Each slide stays a snap point but can scroll inside */
+  .slide {
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-stop: always;
+    padding: 64px 20px 32px;          /* top clears brand bar */
+    justify-content: flex-start;       /* content starts at top, not centered */
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Hide internal scrollbars on mobile (still scrollable) */
+  .slide::-webkit-scrollbar { display: none; }
+  .slide { scrollbar-width: none; }
+
+  /* B. Typography scale-down for phones */
+  .slide__display { font-size: 40px !important; letter-spacing: -1.5px; }
+  .slide__heading { font-size: 26px !important; letter-spacing: -0.5px; margin-bottom: 18px; }
+  .slide__subhead { font-size: 19px !important; }
+  .slide__subtitle { font-size: 13px !important; }
+  .slide__label    { font-size: 10px !important; margin-bottom: 14px; letter-spacing: 1.2px; }
+  .slide__body     { font-size: 14.5px !important; line-height: 1.6; }
+
+  /* C. Generous spacing between stacked cards */
+  .findings, .patterns, .recs, .failures {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+  .avoid-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .market-map {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: none !important;
+    gap: 14px !important;
+  }
+
+  /* D. App teardown layout: text on top, screenshots below, with gap */
+  .app__panels {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    gap: 24px !important;
+    height: auto !important;
+  }
+  .app__visual {
+    height: auto !important;
+    min-height: 240px;
+  }
+
+  /* E. Inline-styled grids (used in slides 17, 18, 26 etc.) collapse to 1col */
+  .slide [style*="grid-template-columns:repeat(2"],
+  .slide [style*="grid-template-columns:repeat(3"],
+  .slide [style*="grid-template-columns:repeat(4"],
+  .slide [style*="grid-template-columns:repeat(5"],
+  .slide [style*="grid-template-columns: repeat(2"],
+  .slide [style*="grid-template-columns: repeat(3"],
+  .slide [style*="grid-template-columns:1fr 1fr"],
+  .slide [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+  /* Screenshot grids (5-up) — keep hero full-width, thumbs in pairs */
+  .slide [style*="grid-template-columns:repeat(5, 1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .slide [style*="grid-template-columns:repeat(5, 1fr)"] > :first-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  /* F. Tables — horizontal scroll */
+  .matrix-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table.matrix { font-size: 11px !important; min-width: 600px; }
+  .diff-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* G. Hide nav dots + keyboard hints on phones */
+  .deck-dots, .deck-hints { display: none !important; }
+
+  /* H. Brand bar slimmer on mobile */
+  .deck-brand { font-size: 10px; padding: 10px 14px; }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+  .slide { padding: 60px 16px 28px; }
+  .slide__display { font-size: 34px !important; }
+  .slide__heading { font-size: 22px !important; }
+}
 </style>
 </head>
 <body>
