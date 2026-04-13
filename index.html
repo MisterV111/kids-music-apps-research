@@ -155,15 +155,16 @@ body::before {
 
 .slide__subtitle {
   font-family: var(--font-mono);
-  font-size: clamp(13px, 1.6vw, 18px);
+  font-size: clamp(15px, 1.8vw, 22px);
   color: var(--text-dim);
   letter-spacing: 0.5px;
   margin: 0;
+  line-height: 1.55;
 }
 
 .slide__label {
   font-family: var(--font-mono);
-  font-size: clamp(10px, 1.1vw, 13px);
+  font-size: clamp(12px, 1.2vw, 15px);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -182,7 +183,7 @@ body::before {
 }
 
 .slide__body {
-  font-size: clamp(15px, 1.5vw, 19px);
+  font-size: clamp(16px, 1.6vw, 21px);
   line-height: 1.65;
   color: var(--text);
 }
@@ -241,14 +242,15 @@ body::before {
 
 .slide--divider .slide__number {
   font-family: var(--font-heading);
-  font-size: clamp(140px, 26vw, 320px);
+  font-size: clamp(160px, 28vw, 360px);
   font-weight: 200;
   line-height: 0.85;
   color: var(--accent);
   opacity: 0.08;
   position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -55%);
+  top: 50%;
+  right: clamp(20px, 5vw, 80px);
+  transform: translateY(-50%);
   pointer-events: none;
   font-variant-numeric: tabular-nums;
 }
@@ -256,6 +258,24 @@ body::before {
 .slide--divider .slide__content {
   position: relative;
   z-index: 1;
+  max-width: 60%;
+}
+
+.slide--divider .slide__heading {
+  font-size: clamp(40px, 6vw, 72px);
+}
+
+.slide--divider .slide__subtitle {
+  font-size: clamp(16px, 1.9vw, 24px);
+}
+
+@media (max-width: 768px) {
+  .slide--divider .slide__content { max-width: 100%; }
+  .slide--divider .slide__number {
+    right: -20px;
+    font-size: 200px;
+    opacity: 0.06;
+  }
 }
 
 /* Three findings */
@@ -412,18 +432,18 @@ body::before {
 
 .app__num {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--accent);
   letter-spacing: 1.5px;
 }
 
 .app__tag {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-mute);
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  padding: 3px 8px;
+  padding: 4px 10px;
   border: 1px solid var(--border);
   border-radius: 4px;
 }
@@ -440,7 +460,7 @@ body::before {
 
 .app__parent {
   font-family: var(--font-mono);
-  font-size: clamp(11px, 1vw, 13px);
+  font-size: clamp(13px, 1.1vw, 16px);
   color: var(--text-mute);
   margin: 0 0 clamp(16px, 2vh, 24px);
 }
@@ -460,7 +480,7 @@ body::before {
 
 .app__slot-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   color: var(--accent);
   letter-spacing: 1.2px;
   text-transform: uppercase;
@@ -468,9 +488,9 @@ body::before {
 }
 
 .app__slot-value {
-  font-size: clamp(12px, 1.1vw, 14px);
+  font-size: clamp(14px, 1.2vw, 17px);
   color: var(--text);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .app__slot-value strong { color: var(--text-bright); font-weight: 600; }
@@ -485,12 +505,12 @@ body::before {
 
 .app__verdict-col h4 {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-mute);
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -510,12 +530,12 @@ body::before {
 }
 
 .app__verdict-col li {
-  font-size: clamp(11px, 0.95vw, 13px);
+  font-size: clamp(13px, 1.05vw, 15px);
   color: var(--text);
-  line-height: 1.45;
-  padding-left: 10px;
+  line-height: 1.5;
+  padding-left: 12px;
   position: relative;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
 .app__verdict-col li::before {
@@ -581,7 +601,7 @@ body::before {
 table.matrix {
   width: 100%;
   border-collapse: collapse;
-  font-size: clamp(11px, 1vw, 14px);
+  font-size: clamp(13px, 1.1vw, 16px);
 }
 
 table.matrix thead th {
@@ -589,20 +609,20 @@ table.matrix thead th {
   background: var(--surface2);
   color: var(--accent);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   font-weight: 600;
   text-align: left;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-bright);
 }
 
 table.matrix tbody td {
-  padding: 11px 14px;
+  padding: 13px 16px;
   border-bottom: 1px solid var(--border);
   color: var(--text);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 table.matrix tbody tr:nth-child(even) td { background: var(--surface); }
@@ -636,7 +656,7 @@ table.matrix tbody td:first-child {
 
 .pattern__num {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--accent);
   letter-spacing: 1.5px;
   margin-bottom: 10px;
@@ -652,9 +672,9 @@ table.matrix tbody td:first-child {
 }
 
 .pattern__body {
-  font-size: clamp(12px, 1.05vw, 15px);
+  font-size: clamp(14px, 1.15vw, 17px);
   color: var(--text);
-  line-height: 1.55;
+  line-height: 1.6;
   margin: 0;
 }
 
@@ -680,7 +700,7 @@ table.matrix tbody td:first-child {
 
 .avoid__title {
   font-family: var(--font-heading);
-  font-size: clamp(13px, 1.2vw, 16px);
+  font-size: clamp(15px, 1.3vw, 18px);
   font-weight: 600;
   color: var(--text-bright);
   margin: 0 0 8px;
@@ -688,9 +708,9 @@ table.matrix tbody td:first-child {
 }
 
 .avoid__body {
-  font-size: clamp(11px, 0.95vw, 13px);
+  font-size: clamp(13px, 1.05vw, 15px);
   color: var(--text-dim);
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -726,17 +746,17 @@ table.matrix tbody td:first-child {
 
 .rec__text h4 {
   font-family: var(--font-heading);
-  font-size: clamp(14px, 1.3vw, 17px);
+  font-size: clamp(16px, 1.4vw, 19px);
   font-weight: 600;
   color: var(--text-bright);
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   line-height: 1.25;
 }
 
 .rec__text p {
-  font-size: clamp(11px, 1vw, 13px);
+  font-size: clamp(13px, 1.1vw, 15px);
   color: var(--text-dim);
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -761,10 +781,10 @@ table.matrix tbody td:first-child {
 
 .thesis-footnote {
   font-family: var(--font-mono);
-  font-size: clamp(11px, 1vw, 13px);
+  font-size: clamp(13px, 1.1vw, 15px);
   color: var(--text-mute);
   max-width: 900px;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 /* Failed attempts table */
@@ -789,7 +809,7 @@ table.matrix tbody td:first-child {
 
 .failure__year {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 13px;
   color: var(--accent);
   letter-spacing: 1.3px;
   text-transform: uppercase;
@@ -805,9 +825,9 @@ table.matrix tbody td:first-child {
 }
 
 .failure__why {
-  font-size: clamp(11px, 1vw, 13px);
+  font-size: clamp(13px, 1.1vw, 15px);
   color: var(--text);
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -818,26 +838,26 @@ table.matrix tbody td:first-child {
   width: 100%;
   border-collapse: collapse;
   margin-top: clamp(10px, 1.5vh, 20px);
-  font-size: clamp(11px, 1vw, 14px);
+  font-size: clamp(13px, 1.1vw, 16px);
 }
 
 .diff-table th {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--accent);
   text-align: left;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--border-bright);
   text-transform: uppercase;
   letter-spacing: 1.2px;
 }
 
 .diff-table td {
-  padding: 10px 12px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--border);
   color: var(--text);
-  line-height: 1.4;
+  line-height: 1.5;
   vertical-align: top;
 }
 
