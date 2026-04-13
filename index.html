@@ -465,6 +465,11 @@ body::before {
   margin: 0 0 clamp(16px, 2vh, 24px);
 }
 
+/* Gameplay button wrapper — keep clear of the slot grid below */
+.app__panel--text .reveal[style*="margin-top:8px"] {
+  margin-bottom: clamp(18px, 2.5vh, 28px) !important;
+}
+
 .app__slots {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1423,6 +1428,7 @@ table.matrix tbody td:first-child {
       </div>
       <h2 class="app__name reveal">Duolingo Music</h2>
       <div class="app__parent reveal">Duolingo Inc. (NASDAQ: DUOL) · launched Oct 2023 · 500M+ users across app</div>
+      <div class="reveal" style="margin-top:8px;"><a href="https://www.youtube.com/watch?v=wiSqSOp3LOY&list=PLr1n4a56w0FoEAaON4uJY116s1hfj5kyI" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Watch gameplay</a></div>
       <div class="app__slots reveal">
         <div class="app__slot"><div class="app__slot-label">Platform</div><div class="app__slot-value">iOS + Android. Lives inside the main Duolingo app.</div></div>
         <div class="app__slot"><div class="app__slot-label">Pricing</div><div class="app__slot-value">Free with hearts limit · Super $6.99/mo.</div></div>
