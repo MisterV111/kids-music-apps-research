@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kids Music Apps — Competitive Landscape for Guitar Animals</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-black: #000000;
+  --color-dark: #0A0A0A;
+  --color-surface: #111111;
+  --color-surface-2: #1A1A1A;
+  --color-border: #222222;
+  --color-border-light: #333333;
+  --color-red: #00D296;
+  --color-red-light: #33E0AB;
+  --color-red-glow: rgba(0,210,150,0.15);
+  --color-red-glow-2: rgba(0,210,150,0.08);
+  --color-white: #FFFFFF;
+  --color-gray-200: #E0E0E0;
+  --color-gray-300: #CCCCCC;
+  --color-gray-400: #999999;
+  --color-gray-500: #777777;
+
+  --bg: var(--color-black);
+  --surface: var(--color-surface);
+  --surface2: var(--color-surface-2);
+  --border: var(--color-border);
+  --border-bright: var(--color-border-light);
+  --text: var(--color-gray-300);
+  --text-bright: var(--color-gray-200);
+  --text-dim: var(--color-gray-400);
+  --text-mute: var(--color-gray-500);
+  --accent: var(--color-red);
+  --accent-hover: var(--color-red-light);
+  --accent-dim: var(--color-red-glow);
+  --accent-dim2: var(--color-red-glow-2);
+
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv01";
+  overflow: hidden;
+}
+
+/* Film grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before { display: none; }
+}
+
+/* ======= Deck engine ======= */
+.deck {
+  height: 100dvh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.slide {
+  height: 100dvh;
+  scroll-snap-align: start;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(40px, 6vh, 80px) clamp(40px, 8vw, 120px);
+  isolation: isolate;
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+
+.slide.visible {
+  opacity: 1;
+  transform: none;
+}
+
+.slide .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+
+.slide.visible .reveal { opacity: 1; transform: none; }
+.slide.visible .reveal:nth-child(1) { transition-delay: .1s; }
+.slide.visible .reveal:nth-child(2) { transition-delay: .2s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: .3s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: .4s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: .5s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: .6s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .slide, .slide .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Typography */
+.slide__display {
+  font-family: var(--font-heading);
+  font-size: clamp(48px, 9vw, 110px);
+  font-weight: 700;
+  letter-spacing: -3px;
+  line-height: 0.95;
+  color: var(--color-white);
+  text-wrap: balance;
+  margin: 0;
+}
+
+.slide__heading {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 4.5vw, 48px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  color: var(--color-white);
+  text-wrap: balance;
+  margin: 0 0 clamp(16px, 2vh, 32px);
+}
+
+.slide__subhead {
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 600;
+  color: var(--text-bright);
+  margin: 0 0 14px;
+  letter-spacing: -0.5px;
+}
+
+.slide__subtitle {
+  font-family: var(--font-mono);
+  font-size: clamp(15px, 1.8vw, 22px);
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.slide__label {
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 1.2vw, 15px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  margin: 0 0 clamp(14px, 2vh, 24px);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slide__label::before {
+  content: '';
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.slide__body {
+  font-size: clamp(16px, 1.6vw, 21px);
+  line-height: 1.65;
+  color: var(--text);
+}
+
+/* Title slide */
+.slide--title {
+  justify-content: center;
+  align-items: flex-start;
+  background: radial-gradient(ellipse at 30% 40%, var(--accent-dim2), transparent 60%),
+              radial-gradient(ellipse at 80% 80%, var(--accent-dim2), transparent 50%),
+              var(--bg);
+}
+
+.slide--title .slide__kicker {
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1.2vw, 14px);
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.slide--title .slide__meta {
+  margin-top: 48px;
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.slide--title .slide__meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slide--title .slide__meta-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.slide--title .slide__meta-value {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-bright);
+  font-weight: 500;
+}
+
+/* Divider slide */
+.slide--divider {
+  justify-content: center;
+  position: relative;
+}
+
+.slide--divider .slide__number {
+  font-family: var(--font-heading);
+  font-size: clamp(160px, 28vw, 360px);
+  font-weight: 200;
+  line-height: 0.85;
+  color: var(--accent);
+  opacity: 0.08;
+  position: absolute;
+  top: 50%;
+  right: clamp(20px, 5vw, 80px);
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.slide--divider .slide__content {
+  position: relative;
+  z-index: 1;
+  max-width: 60%;
+}
+
+.slide--divider .slide__heading {
+  font-size: clamp(40px, 6vw, 72px);
+}
+
+.slide--divider .slide__subtitle {
+  font-size: clamp(16px, 1.9vw, 24px);
+}
+
+@media (max-width: 768px) {
+  .slide--divider .slide__content { max-width: 100%; }
+  .slide--divider .slide__number {
+    right: -20px;
+    font-size: 200px;
+    opacity: 0.06;
+  }
+}
+
+/* Three findings */
+.findings {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: clamp(16px, 2vw, 28px);
+  margin-top: clamp(12px, 2vh, 24px);
+}
+
+.finding {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: clamp(18px, 2.5vh, 28px) clamp(16px, 2vw, 24px);
+  display: flex;
+  flex-direction: column;
+}
+
+.finding__num {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.finding__title {
+  font-family: var(--font-heading);
+  font-size: clamp(17px, 1.6vw, 21px);
+  font-weight: 600;
+  color: var(--text-bright);
+  line-height: 1.25;
+  margin: 0 0 12px;
+}
+
+.finding__body {
+  font-size: clamp(13px, 1.1vw, 15px);
+  color: var(--text);
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+
+.finding__body strong {
+  color: var(--text-bright);
+  font-weight: 600;
+}
+
+/* Market map */
+.market-map {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: clamp(10px, 1.2vw, 16px);
+  margin-top: clamp(12px, 2vh, 20px);
+  flex: 1;
+  min-height: 0;
+}
+
+.market-map__cell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: clamp(10px, 1.5vh, 18px) clamp(10px, 1.2vw, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.market-map__cell--learning {
+  border-top: 2px solid var(--accent);
+}
+
+.market-map__cell--play {
+  border-top: 2px solid var(--text-mute);
+}
+
+.market-map__name {
+  font-family: var(--font-heading);
+  font-size: clamp(17px, 1.6vw, 21px);
+  font-weight: 600;
+  color: var(--text-bright);
+  line-height: 1.2;
+}
+
+.market-map__tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.market-map__detail {
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+}
+
+.market-map__pricing {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+
+/* App teardown slide */
+.slide--app {
+  padding: 0;
+}
+
+.app__panels {
+  display: grid;
+  grid-template-columns: 5fr 4fr;
+  height: 100%;
+}
+
+.app__panel {
+  padding: clamp(28px, 4vh, 56px) clamp(24px, 3vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.app__panel--text {
+  background: var(--surface);
+}
+
+.app__panel--visual {
+  background: var(--color-black);
+  padding: clamp(20px, 3vh, 40px);
+  justify-content: center;
+  position: relative;
+}
+
+.app__header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.app__num {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+}
+
+.app__tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.app__name {
+  font-family: var(--font-heading);
+  font-size: clamp(26px, 3.2vw, 40px);
+  font-weight: 700;
+  color: var(--color-white);
+  margin: 0 0 4px;
+  letter-spacing: -1px;
+  line-height: 1.05;
+}
+
+.app__parent {
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 1.1vw, 16px);
+  color: var(--text-mute);
+  margin: 0 0 clamp(16px, 2vh, 24px);
+}
+
+/* Gameplay button wrapper — keep clear of the slot grid below */
+.app__panel--text .reveal[style*="margin-top:8px"] {
+  margin-bottom: clamp(18px, 2.5vh, 28px) !important;
+}
+
+.app__slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 1.2vh, 16px) clamp(14px, 1.8vw, 24px);
+  margin-bottom: clamp(14px, 2vh, 20px);
+}
+
+.app__slot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app__slot-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.app__slot-value {
+  font-size: clamp(14px, 1.2vw, 17px);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.app__slot-value strong { color: var(--text-bright); font-weight: 600; }
+
+.app__verdict {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: clamp(10px, 1vw, 16px);
+  border-top: 1px solid var(--border);
+  padding-top: clamp(12px, 1.8vh, 20px);
+}
+
+.app__verdict-col h4 {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app__verdict-col h4::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+}
+
+.app__verdict-col--pro h4::before { background: #4ade80; }
+.app__verdict-col--con h4::before { background: var(--accent); }
+.app__verdict-col--borrow h4::before { background: #fbbf24; }
+
+.app__verdict-col ul {
+  margin: 0; padding: 0; list-style: none;
+}
+
+.app__verdict-col li {
+  font-size: clamp(13px, 1.05vw, 15px);
+  color: var(--text);
+  line-height: 1.5;
+  padding-left: 12px;
+  position: relative;
+  margin-bottom: 7px;
+}
+
+.app__verdict-col li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--text-mute);
+}
+
+.app__verdict-col--borrow li { color: var(--text-bright); font-weight: 500; }
+
+/* Screenshot gallery on app panel */
+.screens {
+  display: grid;
+  gap: clamp(8px, 1vh, 14px);
+  height: 100%;
+  width: 100%;
+}
+
+.screens--grid5 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.screens--grid5 > :nth-child(1) { grid-column: 1 / 3; grid-row: 1 / 3; }
+
+.screens--grid4 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.screens--grid3 {
+  grid-template-columns: 1.4fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.screens--grid3 > :nth-child(1) { grid-row: 1 / 3; }
+
+.screens__item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.screens__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Comparative matrix */
+.matrix-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-top: clamp(12px, 2vh, 20px);
+}
+
+table.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(13px, 1.1vw, 16px);
+}
+
+table.matrix thead th {
+  position: sticky; top: 0;
+  background: var(--surface2);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: left;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-bright);
+}
+
+table.matrix tbody td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+table.matrix tbody tr:nth-child(even) td { background: var(--surface); }
+
+table.matrix tbody td:first-child {
+  color: var(--text-bright);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Patterns */
+.patterns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 2vw, 24px);
+  margin-top: clamp(12px, 2vh, 20px);
+  flex: 1;
+  min-height: 0;
+}
+
+.pattern {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: clamp(18px, 2.5vh, 28px) clamp(18px, 2vw, 26px);
+  display: flex;
+  flex-direction: column;
+}
+
+.pattern__num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+
+.pattern__title {
+  font-family: var(--font-heading);
+  font-size: clamp(17px, 1.7vw, 22px);
+  font-weight: 600;
+  color: var(--text-bright);
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+
+.pattern__body {
+  font-size: clamp(14px, 1.15vw, 17px);
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.pattern__body strong { color: var(--text-bright); font-weight: 600; }
+
+/* Avoid grid (4 cols) */
+.avoid-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(10px, 1.2vw, 16px);
+  margin-top: clamp(12px, 2vh, 20px);
+  flex: 1;
+  min-height: 0;
+}
+
+.avoid {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: clamp(14px, 2vh, 22px) clamp(12px, 1.5vw, 18px);
+}
+
+.avoid__title {
+  font-family: var(--font-heading);
+  font-size: clamp(15px, 1.3vw, 18px);
+  font-weight: 600;
+  color: var(--text-bright);
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.avoid__body {
+  font-size: clamp(13px, 1.05vw, 15px);
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Recommendations */
+.recs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 1.8vw, 22px);
+  margin-top: clamp(12px, 2vh, 18px);
+  flex: 1;
+  min-height: 0;
+}
+
+.rec {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: clamp(14px, 2vh, 22px) clamp(14px, 1.5vw, 20px);
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.rec__num {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 3vw, 42px);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 0.9;
+  min-width: 44px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rec__text h4 {
+  font-family: var(--font-heading);
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-weight: 600;
+  color: var(--text-bright);
+  margin: 0 0 8px;
+  line-height: 1.25;
+}
+
+.rec__text p {
+  font-size: clamp(13px, 1.1vw, 15px);
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Appendix slides */
+.thesis-hero {
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 3.2vw, 38px);
+  font-weight: 600;
+  color: var(--text-bright);
+  line-height: 1.3;
+  text-wrap: balance;
+  max-width: 1100px;
+  margin: clamp(16px, 2vh, 28px) 0;
+}
+
+.thesis-hero strong {
+  color: var(--color-white);
+  font-weight: 700;
+  background: linear-gradient(0deg, var(--accent-dim) 0%, var(--accent-dim) 35%, transparent 35%, transparent 100%);
+  padding: 0 4px;
+}
+
+.thesis-footnote {
+  font-family: var(--font-mono);
+  font-size: clamp(13px, 1.1vw, 15px);
+  color: var(--text-mute);
+  max-width: 900px;
+  line-height: 1.6;
+}
+
+/* Failed attempts table */
+.failures {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(12px, 1.5vw, 20px);
+  margin-top: clamp(10px, 1.5vh, 20px);
+  flex: 1;
+  min-height: 0;
+}
+
+.failure {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: clamp(14px, 1.8vh, 22px) clamp(14px, 1.5vw, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.failure__year {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+}
+
+.failure__name {
+  font-family: var(--font-heading);
+  font-size: clamp(15px, 1.4vw, 19px);
+  font-weight: 700;
+  color: var(--text-bright);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.failure__why {
+  font-size: clamp(13px, 1.1vw, 15px);
+  color: var(--text);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.failure__why strong { color: var(--accent-hover); }
+
+/* Difficulty table on appendix */
+.diff-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: clamp(10px, 1.5vh, 20px);
+  font-size: clamp(13px, 1.1vw, 16px);
+}
+
+.diff-table th {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-bright);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.diff-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  line-height: 1.5;
+  vertical-align: top;
+}
+
+.diff-table tbody tr:hover td { background: var(--surface); }
+.diff-table td:first-child { color: var(--text-bright); font-weight: 600; }
+.diff-table td.harder { color: var(--accent-hover); }
+
+/* Open questions */
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.5vh, 20px);
+  margin-top: clamp(12px, 2vh, 20px);
+  max-width: 1000px;
+}
+
+.question {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: clamp(14px, 1.8vh, 22px) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.question:last-child { border-bottom: 0; }
+
+.question__num {
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  min-width: 50px;
+}
+
+.question__text {
+  font-family: var(--font-heading);
+  font-size: clamp(15px, 1.5vw, 20px);
+  font-weight: 500;
+  color: var(--text-bright);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Closing */
+.slide--closing {
+  justify-content: center;
+  align-items: flex-start;
+  background: radial-gradient(ellipse at 60% 50%, var(--accent-dim2), transparent 60%), var(--bg);
+}
+
+.closing__big {
+  font-family: var(--font-heading);
+  font-size: clamp(40px, 6.5vw, 88px);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--color-white);
+  text-wrap: balance;
+  letter-spacing: -2px;
+  max-width: 1400px;
+}
+
+.closing__big em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.closing__small {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 40px;
+  letter-spacing: 1.2px;
+}
+
+/* Chrome */
+.deck-progress {
+  position: fixed; top: 0; left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 100;
+  transition: width 0.3s ease;
+  pointer-events: none;
+  width: 0;
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.deck-dots {
+  position: fixed;
+  right: clamp(12px, 2vw, 24px);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+  padding: 8px 6px;
+  background: rgba(10,10,10,0.65);
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid var(--border);
+}
+
+.deck-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--text-mute);
+  opacity: 0.4;
+  border: none; padding: 0; cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.deck-dot:hover { opacity: 0.8; }
+
+.deck-dot.active {
+  opacity: 1;
+  transform: scale(1.6);
+  background: var(--accent);
+}
+
+.deck-counter {
+  position: fixed;
+  bottom: clamp(12px, 2vh, 24px);
+  right: clamp(12px, 2vw, 24px);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  z-index: 100;
+  font-variant-numeric: tabular-nums;
+  background: rgba(10,10,10,0.65);
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+
+.deck-hints {
+  position: fixed;
+  bottom: clamp(12px, 2vh, 24px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  opacity: 0.6;
+  z-index: 100;
+  transition: opacity 0.5s ease;
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+.deck-hints.faded { opacity: 0; pointer-events: none; }
+
+.deck-brand {
+  position: fixed;
+  top: clamp(12px, 2vh, 20px);
+  left: clamp(12px, 2vw, 24px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  letter-spacing: 1.5px;
+  z-index: 100;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.deck-brand::before {
+  content: '';
+  width: 10px; height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--accent);
+}
+
+.deck-logo {
+  position: fixed;
+  top: clamp(14px, 2.2vh, 22px);
+  right: clamp(14px, 2.2vw, 26px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+.deck-logo:hover { opacity: 1; }
+.deck-logo svg {
+  width: clamp(96px, 12vw, 140px);
+  height: auto;
+  display: block;
+}
+@media (max-width: 768px) {
+  .deck-logo svg { width: 84px; }
+  .deck-logo { top: 12px; right: 12px; }
+}
+
+@media (max-width: 900px) {
+  .findings, .patterns, .recs, .failures {
+    grid-template-columns: 1fr !important;
+  }
+  .market-map {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+  }
+  .app__panels {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .avoid-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ============================================================
+   MOBILE (≤768px) — surgical overhaul
+   Goal: keep snap-scrolling, fix spacing, allow tall slides
+   to scroll INTERNALLY within their snap point.
+   ============================================================ */
+@media (max-width: 768px) {
+  /* A. Each slide stays a snap point but can scroll inside */
+  .slide {
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-stop: always;
+    padding: 64px 20px 32px;          /* top clears brand bar */
+    justify-content: flex-start;       /* content starts at top, not centered */
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Hide internal scrollbars on mobile (still scrollable) */
+  .slide::-webkit-scrollbar { display: none; }
+  .slide { scrollbar-width: none; }
+
+  /* B. Typography scale-down for phones */
+  .slide__display { font-size: 40px !important; letter-spacing: -1.5px; }
+  .slide__heading { font-size: 26px !important; letter-spacing: -0.5px; margin-bottom: 18px; }
+  .slide__subhead { font-size: 19px !important; }
+  .slide__subtitle { font-size: 13px !important; }
+  .slide__label    { font-size: 10px !important; margin-bottom: 14px; letter-spacing: 1.2px; }
+  .slide__body     { font-size: 14.5px !important; line-height: 1.6; }
+
+  /* C. Generous spacing between stacked cards */
+  .findings, .patterns, .recs, .failures {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+  .avoid-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .market-map {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: none !important;
+    gap: 14px !important;
+  }
+
+  /* D. App teardown layout: text on top, screenshots below, with gap */
+  .app__panels {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    gap: 24px !important;
+    height: auto !important;
+  }
+  .app__visual {
+    height: auto !important;
+    min-height: 240px;
+  }
+
+  /* E. Inline-styled grids (used in slides 17, 18, 26 etc.) collapse to 1col */
+  .slide [style*="grid-template-columns:repeat(2"],
+  .slide [style*="grid-template-columns:repeat(3"],
+  .slide [style*="grid-template-columns:repeat(4"],
+  .slide [style*="grid-template-columns:repeat(5"],
+  .slide [style*="grid-template-columns: repeat(2"],
+  .slide [style*="grid-template-columns: repeat(3"],
+  .slide [style*="grid-template-columns:1fr 1fr"],
+  .slide [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+  /* Screenshot grids (5-up) — keep hero full-width, thumbs in pairs */
+  .slide [style*="grid-template-columns:repeat(5, 1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .slide [style*="grid-template-columns:repeat(5, 1fr)"] > :first-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  /* F. Tables — horizontal scroll */
+  .matrix-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  table.matrix { font-size: 11px !important; min-width: 600px; }
+  .diff-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* G. Hide nav dots + keyboard hints on phones */
+  .deck-dots, .deck-hints { display: none !important; }
+
+  /* H. Brand bar slimmer on mobile */
+  .deck-brand { font-size: 10px; padding: 10px 14px; }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+  .slide { padding: 60px 16px 28px; }
+  .slide__display { font-size: 34px !important; }
+  .slide__heading { font-size: 22px !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck-brand">Guitar Animals · Competitive Research</div>
+
+<div class="deck-logo" aria-label="Yousician">
+<svg role="img" width="186" height="32" viewBox="0 0 238 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+<title>Yousician</title>
+<path d="M51.8955 36.0835C52.7635 36.324 53.6497 36.4442 54.549 36.4442C55.3882 36.4442 56.0627 36.2429 56.5724 35.8377C57.0822 35.4325 57.5162 34.7214 57.8769 33.7019L58.5959 31.7229L48.8394 9.28467H56.1228L61.6075 24.7088L66.7341 9.28467H73.6148L64.1276 33.43C63.5891 34.7789 63.0767 35.9554 62.5983 36.9592C62.1173 37.9631 61.5709 38.8023 60.9565 39.4768C60.3422 40.1512 59.6076 40.6532 58.7527 40.9826C57.8979 41.312 56.8417 41.4767 55.5816 41.4767C54.8026 41.4767 54.0314 41.4244 53.2654 41.3198C52.502 41.2152 51.6995 41.027 50.8603 40.7578L51.8955 36.0835Z" fill="#00D296"/>
+<path d="M85.3031 33.4744C81.5255 33.4744 78.6028 32.3947 76.5349 30.2379C74.467 28.0785 73.4318 24.9937 73.4318 20.9756C73.4318 19.0567 73.7089 17.3261 74.2631 15.781C74.8173 14.2386 75.6121 12.9341 76.6473 11.8701C77.6825 10.8061 78.9322 9.99045 80.4014 9.42054C81.8706 8.85063 83.5045 8.56567 85.3031 8.56567C87.1305 8.56567 88.7801 8.85063 90.2493 9.42054C91.7185 9.99045 92.9708 10.8087 94.0034 11.8701C95.0386 12.9341 95.8255 14.2386 96.3641 15.781C96.9026 17.3261 97.1745 19.0567 97.1745 20.9756C97.1745 22.9258 96.8974 24.6695 96.3432 26.2146C95.7889 27.7596 94.9942 29.0693 93.9589 30.149C92.9237 31.2287 91.6715 32.0522 90.2049 32.6221C88.7356 33.1894 87.1017 33.4744 85.3031 33.4744ZM85.3031 28.4393C87.1017 28.4393 88.4428 27.7962 89.3265 26.5047C90.2101 25.2159 90.6519 23.3729 90.6519 20.973C90.6519 18.5757 90.2101 16.7457 89.3265 15.4882C88.4428 14.2282 87.1017 13.6007 85.3031 13.6007C83.5045 13.6007 82.1634 14.2308 81.2798 15.4882C80.3962 16.7483 79.9543 18.5757 79.9543 20.973C79.9543 23.4016 80.3883 25.2525 81.2589 26.5256C82.1242 27.8014 83.4731 28.4393 85.3031 28.4393Z" fill="#00D296"/>
+<path d="M100.1 9.28467H106.395V23.9428C106.395 25.6212 106.696 26.7532 107.294 27.3388C107.893 27.9243 108.716 28.2145 109.767 28.2145C110.578 28.2145 111.244 28.0943 111.767 27.8538C112.29 27.6133 112.795 27.2682 113.273 26.8185C113.751 26.4002 114.133 25.8957 114.421 25.3127C114.706 24.7271 114.847 24.0918 114.847 23.4017V9.28467H121.142V32.7555H115.027V29.519C114.068 30.8994 112.98 31.9033 111.767 32.5307C110.554 33.1607 109.258 33.4744 107.877 33.4744C105.208 33.4744 103.245 32.7764 101.987 31.383C100.727 29.9896 100.1 27.7936 100.1 24.7951V9.28467Z" fill="#00D296"/>
+<path d="M129.918 25.2918C130.127 26.6721 130.681 27.5714 131.581 27.9897C132.48 28.4106 133.56 28.6197 134.817 28.6197C136.315 28.6197 137.387 28.4341 138.033 28.0577C138.676 27.6838 139 27.0773 139 26.2355C139 25.6368 138.799 25.1114 138.394 24.6617C137.988 24.2121 137.217 23.8984 136.077 23.718L132.841 23.1794C129.991 22.7298 127.871 21.9586 126.478 20.8632C125.084 19.7704 124.386 18.113 124.386 15.8935C124.386 14.7537 124.635 13.7341 125.129 12.8348C125.623 11.9355 126.321 11.1721 127.22 10.5421C128.119 9.91207 129.191 9.42582 130.436 9.08073C131.68 8.73565 133.05 8.56311 134.551 8.56311C136.409 8.56311 137.967 8.75134 139.227 9.12518C140.488 9.50163 141.512 10.001 142.307 10.631C143.102 11.261 143.7 12.0113 144.106 12.8793C144.511 13.7498 144.804 14.6779 144.981 15.6661L139.361 16.385C139.092 15.3053 138.618 14.5106 137.944 14.0008C137.269 13.491 136.182 13.2374 134.684 13.2374C133.845 13.2374 133.147 13.3054 132.592 13.4387C132.038 13.5746 131.604 13.7472 131.288 13.9563C130.974 14.1655 130.749 14.406 130.613 14.6753C130.478 14.9445 130.412 15.2007 130.412 15.4386C130.412 16.1889 130.645 16.7353 131.11 17.0804C131.576 17.4255 132.483 17.7183 133.832 17.9561L136.799 18.4502C138.446 18.7195 139.81 19.0646 140.89 19.4855C141.97 19.9064 142.83 20.424 143.476 21.0357C144.119 21.6501 144.568 22.3769 144.825 23.216C145.078 24.0552 145.206 25.0303 145.206 26.1388C145.206 28.3583 144.367 30.1334 142.689 31.4666C141.01 32.7999 138.417 33.4666 134.909 33.4666C133.5 33.4666 132.159 33.3385 130.885 33.0849C129.61 32.8287 128.472 32.3869 127.469 31.7594C126.465 31.1294 125.639 30.2902 124.995 29.2419C124.35 28.1936 123.984 26.8734 123.895 25.2839H129.918V25.2918Z" fill="#00D296"/>
+<path d="M148.111 0.64978H154.587V6.31488H148.111V0.64978ZM148.2 9.28468H154.495V32.7555H148.2V9.28468Z" fill="#00D296"/>
+<path d="M179.514 24.2565C179.273 27.0747 178.306 29.3151 176.614 30.9778C174.92 32.6405 172.379 33.4744 168.994 33.4744C167.015 33.4744 165.308 33.1738 163.867 32.5751C162.427 31.9764 161.25 31.1373 160.338 30.0576C159.423 28.9779 158.741 27.6734 158.291 26.1466C157.841 24.6173 157.617 22.9259 157.617 21.0645C157.617 19.2058 157.878 17.5065 158.403 15.9615C158.926 14.4191 159.684 13.0989 160.675 12.0035C161.663 10.9107 162.879 10.0637 164.317 9.46242C165.755 8.86375 167.404 8.56311 169.263 8.56311C170.853 8.56311 172.238 8.76441 173.422 9.16962C174.607 9.57483 175.603 10.1369 176.413 10.8558C177.224 11.5747 177.851 12.4374 178.301 13.4413C178.75 14.4452 179.048 15.5484 179.2 16.7457L172.86 17.6006C172.709 16.4033 172.366 15.436 171.825 14.7014C171.287 13.9668 170.356 13.6008 169.038 13.6008C168.079 13.6008 167.284 13.8021 166.654 14.2073C166.024 14.6125 165.522 15.1589 165.148 15.8491C164.772 16.5392 164.51 17.3261 164.361 18.2097C164.21 19.0934 164.137 20.0162 164.137 20.9756C164.137 21.9638 164.212 22.9102 164.361 23.8095C164.51 24.7088 164.767 25.5035 165.125 26.1937C165.485 26.8839 165.98 27.4302 166.61 27.8354C167.24 28.2407 168.034 28.442 168.994 28.442C170.254 28.442 171.226 28.0812 171.917 27.3623C172.607 26.6433 173.009 25.6081 173.13 24.2591H179.514V24.2565Z" fill="#00D296"/>
+<path d="M182.227 0.64978H188.703V6.31488H182.227V0.64978ZM182.319 9.28468H188.614V32.7555H182.319V9.28468Z" fill="#00D296"/>
+<path d="M206.644 29.7883C205.713 30.8393 204.673 31.6915 203.52 32.3503C202.364 33.0091 200.874 33.3385 199.047 33.3385C197.996 33.3385 197 33.2026 196.056 32.9333C195.112 32.664 194.286 32.2431 193.583 31.6732C192.877 31.1033 192.315 30.3766 191.897 29.4929C191.476 28.6093 191.267 27.5532 191.267 26.3218C191.267 24.7036 191.628 23.3834 192.347 22.3638C193.066 21.3443 194.009 20.5495 195.18 19.9796C196.349 19.4097 197.661 19.0071 199.115 18.7666C200.568 18.5261 202.046 18.3771 203.543 18.317L206.555 18.181V17.0125C206.555 15.5746 206.158 14.5838 205.363 14.0453C204.568 13.5067 203.632 13.2348 202.553 13.2348C200.064 13.2348 198.642 14.1786 198.281 16.0687L192.524 15.5302C192.943 13.0728 194.022 11.2977 195.761 10.2023C197.499 9.10954 199.836 8.56055 202.775 8.56055C204.574 8.56055 206.103 8.77753 207.36 9.2115C208.62 9.64547 209.632 10.2677 210.395 11.0781C211.159 11.8885 211.713 12.8688 212.058 14.0244C212.403 15.1799 212.576 16.4739 212.576 17.9144V32.7529H206.641V29.7883H206.644ZM206.508 22.2776L203.721 22.4135C202.401 22.4736 201.337 22.6096 200.529 22.8187C199.719 23.0279 199.097 23.2919 198.663 23.6056C198.229 23.9193 197.936 24.2879 197.787 24.7062C197.635 25.1271 197.562 25.5898 197.562 26.0996C197.562 26.8787 197.831 27.493 198.372 27.9427C198.911 28.3923 199.661 28.6172 200.621 28.6172C202.239 28.6172 203.559 28.2433 204.579 27.493C205.149 27.0747 205.614 26.5414 205.972 25.8957C206.333 25.2526 206.511 24.45 206.511 23.4906V22.2776H206.508Z" fill="#00D296"/>
+<path d="M216.463 9.2846H222.578V12.5211C223.506 11.1433 224.609 10.1368 225.882 9.50942C227.156 8.87939 228.484 8.56567 229.861 8.56567C232.528 8.56567 234.507 9.26368 235.796 10.6571C237.085 12.0505 237.73 14.2465 237.73 17.245V32.758H231.438V18.0973C231.438 16.4477 231.124 15.3262 230.494 14.7249C229.864 14.1262 229.025 13.8256 227.976 13.8256C227.166 13.8256 226.471 13.9458 225.885 14.1863C225.299 14.4268 224.753 14.7719 224.243 15.2216C223.822 15.6425 223.472 16.1444 223.187 16.7274C222.902 17.313 222.761 17.9483 222.761 18.6384V32.758H216.466V9.2846H216.463Z" fill="#00D296"/>
+<path d="M13.9653 34.622C10.2165 34.622 7.16303 31.5712 7.16303 27.8197H0.363342C0.363342 35.32 6.46503 41.4217 13.9653 41.4217C21.4657 41.4217 27.5673 35.32 27.5673 27.8197H20.7676C20.7676 31.5712 17.7168 34.622 13.9653 34.622Z" fill="#00D296"/>
+<path d="M20.7676 0.615723V14.2177C20.7676 17.9692 17.7168 21.02 13.9653 21.02C10.2139 21.02 7.16565 17.9692 7.16565 14.2177V0.615723H0.363342V14.2177C0.363342 21.718 6.46503 27.8197 13.9653 27.8197C21.4657 27.8197 27.5673 21.718 27.5673 14.2177V0.615723H20.7676Z" fill="#00D296"/>
+</svg>
+</div>
+
+<div class="deck">
+
+<!-- ============= SLIDE 1 — TITLE ============= -->
+<section class="slide slide--title">
+  <div class="reveal">
+    <p class="slide__kicker">Research · Apr 2026 · Plain-English Edition</p>
+    <h1 class="slide__display">Kids Music Apps.<br><span style="color:var(--accent);">Explained simply.</span></h1>
+    <p class="slide__subtitle" style="margin-top:28px; font-size:clamp(16px,2vw,22px); max-width:800px;">Here's what kids aged 6 to 12 are actually using to learn music — and why it matters for a new guitar app called Guitar Animals.</p>
+  </div>
+  <div class="slide__meta reveal">
+    <div class="slide__meta-item">
+      <div class="slide__meta-label">Prepared For</div>
+      <div class="slide__meta-value">Chimera</div>
+    </div>
+    <div class="slide__meta-item">
+      <div class="slide__meta-label">Scope</div>
+      <div class="slide__meta-value">8 apps · kids 6–12</div>
+    </div>
+    <div class="slide__meta-item">
+      <div class="slide__meta-label">Context</div>
+      <div class="slide__meta-value">Wild Chords rebuild · Munich advisory week</div>
+    </div>
+    <div class="slide__meta-item">
+      <div class="slide__meta-label">Prepared By</div>
+      <div class="slide__meta-value">ICG · Offbeat Studios · Yousician</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 2 — EXECUTIVE SUMMARY ============= -->
+<section class="slide">
+  <p class="slide__label reveal">The Big Picture</p>
+  <h2 class="slide__heading reveal">Three things you need to know.</h2>
+  <div class="findings">
+    <div class="finding reveal">
+      <div class="finding__num">01</div>
+      <h3 class="finding__title">Piano apps own the kids market. Nobody has cracked guitar.</h3>
+      <p class="finding__body">One company (JoyTunes) set the template for piano: a simple step-by-step journey, the app listens while the kid plays, stars as rewards, built for iPad. Everyone else copies it or avoids the category. <strong>For guitar, the slot for kids is wide open.</strong></p>
+    </div>
+    <div class="finding reveal">
+      <div class="finding__num">02</div>
+      <h3 class="finding__title">The gap isn't demand. It's that guitar is harder to build for.</h3>
+      <p class="finding__body">Kids-guitar apps have topped app stores before (Wild Chords, 2011). Millions of kids have played them. The real problems: <strong>the app can't always tell what the kid played, small hands struggle with real guitars, and guitars fall out of tune</strong>. Newer AI on phones in 2026 finally solves the listening problem.</p>
+    </div>
+    <div class="finding reveal">
+      <div class="finding__num">03</div>
+      <h3 class="finding__title">The best kids music apps all do four specific things.</h3>
+      <p class="finding__body">Every sound has a character · wrong answers don't exist · you move sounds around in space · anyone can start, no reading needed. <strong>Guitar Animals already fits all four</strong> if the "zoo of animals = chords" idea is kept at the center.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 3 — DIVIDER: THE 8 APPS ============= -->
+<section class="slide slide--divider">
+  <span class="slide__number">01</span>
+  <div class="slide__content reveal">
+    <p class="slide__label">Part One</p>
+    <h2 class="slide__heading">The landscape.</h2>
+    <p class="slide__subtitle" style="max-width:700px; margin-top:12px;">Eight apps that kids aged 6 to 12 use today. What they do, how they make money, and what they get right.</p>
+  </div>
+</section>
+
+<!-- ============= SLIDE 4 — MARKET MAP ============= -->
+<section class="slide">
+  <p class="slide__label reveal">The Map</p>
+  <h2 class="slide__heading reveal">Eight apps split into two groups.</h2>
+  <p class="slide__body reveal" style="color:var(--text-dim); margin:0 0 6px; max-width:900px;">Green = apps that teach music step by step. Gray = apps where kids just play around and make sounds. Younger kids start on the gray side, then move to green as they grow up.</p>
+  <div class="market-map reveal">
+    <div class="market-map__cell market-map__cell--learning">
+      <div class="market-map__name">Piano Maestro</div>
+      <div class="market-map__tag">Piano · iPad</div>
+      <p class="market-map__detail">37 lessons in order from easy to hard. Has a dashboard for music teachers. The one everyone copies.</p>
+      <div class="market-map__pricing">~$60/yr subscription</div>
+    </div>
+    <div class="market-map__cell market-map__cell--learning">
+      <div class="market-map__name">Simply Piano</div>
+      <div class="market-map__tag">Piano · iOS+Android</div>
+      <p class="market-map__detail">Lets you pick your own path. Real licensed songs. Over 810,000 App Store ratings.</p>
+      <div class="market-map__pricing">~$170/yr subscription</div>
+    </div>
+    <div class="market-map__cell market-map__cell--learning">
+      <div class="market-map__name">Rhythm Cat</div>
+      <div class="market-map__tag">Rhythm · small studio</div>
+      <p class="market-map__detail">60 levels that teach kids to read music rhythms by tapping. Music teachers love it.</p>
+      <div class="market-map__pricing">$4.99 one-time (no subscription)</div>
+    </div>
+    <div class="market-map__cell market-map__cell--learning">
+      <div class="market-map__name">Duolingo Music</div>
+      <div class="market-map__tag">On-screen piano · no real instrument</div>
+      <p class="market-map__detail">Built by Duolingo (the language app). Daily streaks, points, leaderboards — the same habit tricks that work for languages. Taps only, no real instrument needed.</p>
+      <div class="market-map__pricing">Free to try · paid version extra</div>
+    </div>
+    <div class="market-map__cell market-map__cell--play">
+      <div class="market-map__name">Melody Jams / Loopimal</div>
+      <div class="market-map__tag">Free play · indie darlings</div>
+      <p class="market-map__detail">Every sound is pre-tuned so anything the kid taps sounds good together. Won design awards.</p>
+      <div class="market-map__pricing">$4.99 each, one-time</div>
+    </div>
+    <div class="market-map__cell market-map__cell--play">
+      <div class="market-map__name">Toca Band</div>
+      <div class="market-map__tag">Free play · Toca Boca (Sweden)</div>
+      <p class="market-map__detail">16 little characters you drag onto a stage. Each one plays a different part. Kids build their own bands.</p>
+      <div class="market-map__pricing">Comes with Piknik subscription</div>
+    </div>
+    <div class="market-map__cell market-map__cell--play">
+      <div class="market-map__name">Sago Mini Music Box</div>
+      <div class="market-map__tag">Free play · ages 2 to 4</div>
+      <p class="market-map__detail">Cute named characters in little worlds. Nothing to buy inside the app. Pure fun.</p>
+      <div class="market-map__pricing">Included in Sago Mini World subscription</div>
+    </div>
+    <div class="market-map__cell market-map__cell--play">
+      <div class="market-map__name">Chrome Music Lab</div>
+      <div class="market-map__tag">Free play · runs in a web browser</div>
+      <p class="market-map__detail">Google's free collection of 13 tiny music toys. "Song Maker" is the one everyone copies.</p>
+      <div class="market-map__pricing">Free · no sign-up</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 5 — PIANO MAESTRO ============= -->
+<section class="slide slide--app">
+  <div class="app__panels">
+    <div class="app__panel app__panel--text">
+      <div class="app__header reveal">
+        <span class="app__num">01 / 08</span>
+        <span class="app__tag">Kids Learning · Piano</span>
+      </div>
+      <h2 class="app__name reveal">Piano Maestro</h2>
+      <div class="app__parent reveal">Made by JoyTunes in Tel Aviv, Israel. Started in 2011.</div>
+      <div class="reveal" style="margin-top:8px;"><a href="https://www.youtube.com/watch?v=cgso-kT1c0g&t=370s" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Watch gameplay</a></div>
+      <div class="app__slots reveal">
+        <div class="app__slot"><div class="app__slot-label">Device</div><div class="app__slot-value"><strong>iPad only.</strong> Sits on a real piano like sheet music.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Cost</div><div class="app__slot-value">Free to try · $9.99/month or $59.99/year to unlock everything.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Lessons</div><div class="app__slot-value"><strong>37 chapters in order.</strong> Starts with one note, ends with full songs. Very gradual.</div></div>
+        <div class="app__slot"><div class="app__slot-label">How it listens</div><div class="app__slot-value">Uses the iPad's microphone to hear what's played. Can also plug into a digital piano.</div></div>
+        <div class="app__slot"><div class="app__slot-label">What motivates kids</div><div class="app__slot-value">Stars · unlocking new songs · <strong>music teachers use it with their students</strong>.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Who uses it</div><div class="app__slot-value">Tens of thousands of piano teachers around the world.</div></div>
+      </div>
+      <div class="app__verdict reveal">
+        <div class="app__verdict-col app__verdict-col--pro">
+          <h4>What it does well</h4>
+          <ul><li>Music teachers recommend it to parents — free marketing</li><li>Most thorough step-by-step lessons in the category</li><li>Serious enough that pros respect it</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--con">
+          <h4>What it gets wrong</h4>
+          <ul><li>Only works on iPads — a shrinking market</li><li>The microphone often misses when kids play wrong notes</li><li>Looks like a textbook, not a game</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--borrow">
+          <h4>Ideas for Guitar Animals</h4>
+          <ul><li>Build a dashboard for guitar teachers — they'll tell parents</li><li>A clear "lesson 1, 2, 3…" path kids can follow</li><li>Separate "learn" mode from "just play" mode</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="app__panel app__panel--visual reveal">
+      <div class="screens screens--grid5">
+        <div class="screens__item"><img src="screenshots/01_piano_maestro/01_piano_maestro_01.jpg" alt="Piano Maestro hero"></div>
+        <div class="screens__item"><img src="screenshots/01_piano_maestro/01_piano_maestro_02.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/01_piano_maestro/01_piano_maestro_03.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/01_piano_maestro/01_piano_maestro_04.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/01_piano_maestro/01_piano_maestro_05.jpg" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 6 — SIMPLY PIANO ============= -->
+<section class="slide slide--app">
+  <div class="app__panels">
+    <div class="app__panel app__panel--text">
+      <div class="app__header reveal">
+        <span class="app__num">02 / 08</span>
+        <span class="app__tag">Kids Learning · Piano</span>
+      </div>
+      <h2 class="app__name reveal">Simply Piano</h2>
+      <div class="app__parent reveal">By the same company as Piano Maestro. Over 810,000 reviews, 4.69 out of 5 stars.</div>
+      <div class="reveal" style="margin-top:8px;"><a href="https://youtu.be/iNp2mi07Cjw" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Watch gameplay</a></div>
+      <div class="app__slots reveal">
+        <div class="app__slot"><div class="app__slot-label">Device</div><div class="app__slot-value">iPhone, iPad, or Android. Phone or tablet.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Cost</div><div class="app__slot-value">Free to try · <strong>$24.99/month or $169.99/year</strong>. Parents often complain the free trial auto-charges.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Lessons</div><div class="app__slot-value"><strong>100+ courses you can pick from.</strong> Plus a daily 5-minute workout.</div></div>
+        <div class="app__slot"><div class="app__slot-label">How it listens</div><div class="app__slot-value">Same tech as Piano Maestro — microphone or digital piano plug-in.</div></div>
+        <div class="app__slot"><div class="app__slot-label">What motivates kids</div><div class="app__slot-value">Daily streaks · real Disney and pop songs · daily 5-min sessions.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Who uses it</div><div class="app__slot-value">#1 Education app in 20+ countries. Hit roughly $50M in yearly revenue at peak.</div></div>
+      </div>
+      <div class="app__verdict reveal">
+        <div class="app__verdict-col app__verdict-col--pro">
+          <h4>What it does well</h4>
+          <ul><li>Huge catalog of real, licensed songs</li><li>Works on any phone or tablet</li><li>Brand parents already know and trust</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--con">
+          <h4>What it gets wrong</h4>
+          <ul><li>The "kids version" is just marketing — same app inside</li><li>Same microphone-listening issues as Piano Maestro</li><li>Parents complain loudly about the price and sneaky renewals</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--borrow">
+          <h4>Ideas for Guitar Animals</h4>
+          <ul><li>Pay to include real popular songs</li><li>Offer different course tracks ("Pirate Chords," "Animal Songs")</li><li>Daily 5-minute sessions to keep kids coming back</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="app__panel app__panel--visual reveal">
+      <div class="screens screens--grid5">
+        <div class="screens__item"><img src="screenshots/02_simply_piano/02_simply_piano_01.jpg" alt="Simply Piano hero"></div>
+        <div class="screens__item"><img src="screenshots/02_simply_piano/02_simply_piano_02.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/02_simply_piano/02_simply_piano_03.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/02_simply_piano/02_simply_piano_04.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/02_simply_piano/02_simply_piano_05.jpg" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 7 — RHYTHM CAT ============= -->
+<section class="slide slide--app">
+  <div class="app__panels">
+    <div class="app__panel app__panel--text">
+      <div class="app__header reveal">
+        <span class="app__num">03 / 08</span>
+        <span class="app__tag">Learning · Rhythm</span>
+      </div>
+      <h2 class="app__name reveal">Rhythm Cat</h2>
+      <div class="app__parent reveal">Made by LMuse, a small UK studio run by music teachers. Part of the "Melody Cats" family of apps.</div>
+      <div class="reveal" style="margin-top:8px;"><a href="https://www.youtube.com/watch?v=JrplPwzybps" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Watch gameplay</a></div>
+      <div class="app__slots reveal">
+        <div class="app__slot"><div class="app__slot-label">Device</div><div class="app__slot-value">iPhone, iPad, and Android · phone or tablet.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Cost</div><div class="app__slot-value"><strong>$4.99, one-time.</strong> No subscription. No ads. No extra purchases.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Lessons</div><div class="app__slot-value"><strong>60 levels across 4 stages.</strong> Starts with basic beats and gets harder.</div></div>
+        <div class="app__slot"><div class="app__slot-label">How it listens</div><div class="app__slot-value">Kids tap the screen to the beat. No microphone, no real instrument — pure rhythm practice.</div></div>
+        <div class="app__slot"><div class="app__slot-label">What motivates kids</div><div class="app__slot-value"><strong>The cat mascot changes and grows</strong> as kids level up. Stars unlock the next level.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Who uses it</div><div class="app__slot-value">Middle-school music classes. Music teachers love it.</div></div>
+      </div>
+      <div class="app__verdict reveal">
+        <div class="app__verdict-col app__verdict-col--pro">
+          <h4>What it does well</h4>
+          <ul><li>Best rhythm lessons of any app in the store</li><li>Pay once, no subscription tricks</li><li>Watching the cat grow keeps kids motivated without costing much to build</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--con">
+          <h4>What it gets wrong</h4>
+          <ul><li>Only tapping — kids never touch a real instrument</li><li>Relies on colors in a way that excludes colorblind kids</li><li>Too strict on timing for kids under 7</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--borrow">
+          <h4>Ideas for Guitar Animals</h4>
+          <ul><li>Make each animal grow and change as kids progress</li><li>Offer a one-time price option alongside the subscription</li><li>A rhythm warm-up mini-game before each real chord lesson</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="app__panel app__panel--visual reveal">
+      <div class="screens screens--grid5">
+        <div class="screens__item"><img src="screenshots/03_rhythm_cat/03_rhythm_cat_01.jpg" alt="Rhythm Cat hero"></div>
+        <div class="screens__item"><img src="screenshots/03_rhythm_cat/03_rhythm_cat_02.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/03_rhythm_cat/03_rhythm_cat_03.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/03_rhythm_cat/03_rhythm_cat_04.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/03_rhythm_cat/03_rhythm_cat_05.jpg" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 8 — DUOLINGO MUSIC ============= -->
+<section class="slide slide--app">
+  <div class="app__panels">
+    <div class="app__panel app__panel--text">
+      <div class="app__header reveal">
+        <span class="app__num">04 / 08</span>
+        <span class="app__tag">Learning · tap piano</span>
+      </div>
+      <h2 class="app__name reveal">Duolingo Music</h2>
+      <div class="app__parent reveal">From Duolingo — the big green owl language app (publicly traded company). Launched October 2023. Over 500 million people use Duolingo.</div>
+      <div class="reveal" style="margin-top:8px;"><a href="https://www.youtube.com/watch?v=wiSqSOp3LOY&list=PLr1n4a56w0FoEAaON4uJY116s1hfj5kyI" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Watch gameplay</a></div>
+      <div class="app__slots reveal">
+        <div class="app__slot"><div class="app__slot-label">Device</div><div class="app__slot-value">iPhone and Android. It's a section inside the main Duolingo app.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Cost</div><div class="app__slot-value">Free (with limited tries per day) · $6.99/month to remove the limits.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Lessons</div><div class="app__slot-value"><strong>One strict path, no choices.</strong> Like the language lessons — simple one-finger melodies.</div></div>
+        <div class="app__slot"><div class="app__slot-label">How it listens</div><div class="app__slot-value"><strong>No real instrument at all.</strong> Kids just tap piano keys on the screen.</div></div>
+        <div class="app__slot"><div class="app__slot-label">What motivates kids</div><div class="app__slot-value"><strong>The famous Duolingo tricks:</strong> daily streaks, points, leaderboards, "don't miss a day" pressure.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Getting started</div><div class="app__slot-value">Under 10 seconds. Zero setup. The fastest start in the category.</div></div>
+      </div>
+      <div class="app__verdict reveal">
+        <div class="app__verdict-col app__verdict-col--pro">
+          <h4>What it does well</h4>
+          <ul><li>Best "come back tomorrow" system in education apps</li><li>Kids can start in seconds with no setup</li><li>Works great on a phone, not just an iPad</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--con">
+          <h4>What it gets wrong</h4>
+          <ul><li>Tapping on a screen doesn't teach you to play a real piano</li><li>The "hearts" system is frustrating on small phone screens</li><li>Kids hit a ceiling quickly — no depth</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--borrow">
+          <h4>Ideas for Guitar Animals</h4>
+          <ul><li><strong>Copy the whole streak + points + leaderboard system</strong></li><li>Under-30-second start (let kids tap animals first, set up a guitar later)</li><li>Design for phones first, not iPads</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="app__panel app__panel--visual reveal">
+      <div class="screens screens--grid5">
+        <div class="screens__item"><img src="screenshots/04_duolingo_music/04_duolingo_music_01.png" alt="Duolingo Music hero"></div>
+        <div class="screens__item"><img src="screenshots/04_duolingo_music/04_duolingo_music_02.png" alt=""></div>
+        <div class="screens__item"><img src="screenshots/04_duolingo_music/04_duolingo_music_03.png" alt=""></div>
+        <div class="screens__item"><img src="screenshots/04_duolingo_music/04_duolingo_music_04.gif" alt=""></div>
+        <div class="screens__item"><img src="screenshots/04_duolingo_music/04_duolingo_music_05.gif" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 9 — LOOPIMAL / MELODY JAMS ============= -->
+<section class="slide slide--app">
+  <div class="app__panels">
+    <div class="app__panel app__panel--text">
+      <div class="app__header reveal">
+        <span class="app__num">05 / 08</span>
+        <span class="app__tag">Free play · characters that make sound</span>
+      </div>
+      <h2 class="app__name reveal">Melody Jams + Loopimal</h2>
+      <div class="app__parent reveal">Loopimal is by Yatatoy (a small Finland studio). Melody Jams is by a separate team (James Bartley). Both have been featured by Apple as Editors' Choice.</div>
+      <div class="reveal" style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="https://www.youtube.com/watch?v=mAfiHBaHZVU" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Melody Jams gameplay</a>
+        <a href="https://www.youtube.com/watch?v=vyM6W7vN2jM" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Loopimal gameplay</a>
+      </div>
+      <div class="app__slots reveal">
+        <div class="app__slot"><div class="app__slot-label">Device</div><div class="app__slot-value">iPhone and iPad only. Not on Android.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Cost</div><div class="app__slot-value">Each costs <strong>$4.99, one-time.</strong> Never a subscription, never an in-app purchase.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Lessons</div><div class="app__slot-value"><strong>None — pure free play.</strong> No levels, no stars, no goals. Just make music.</div></div>
+        <div class="app__slot"><div class="app__slot-label">How it works</div><div class="app__slot-value">Tap and drag little animals. Each animal plays a sound. You build loops.</div></div>
+        <div class="app__slot"><div class="app__slot-label">The clever trick</div><div class="app__slot-value"><strong>Every sound is pre-tuned so nothing ever sounds wrong.</strong> Whatever the kid does, it sounds good.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Who uses it</div><div class="app__slot-value">Apple "App of the Week." The Guardian called it "simply marvellous." Small audience, very loyal.</div></div>
+      </div>
+      <div class="app__verdict reveal">
+        <div class="app__verdict-col app__verdict-col--pro">
+          <h4>What it does well</h4>
+          <ul><li>Gorgeous craft — every animation handmade</li><li>Kids can't get it wrong, so they aren't frustrated</li><li>Each animal = one sound — learnable in seconds</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--con">
+          <h4>What it gets wrong</h4>
+          <ul><li>Kids get bored after about two weeks — nothing to progress toward</li><li>Doesn't actually teach music</li><li>Niche audience of design-minded parents</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--borrow">
+          <h4>Ideas for Guitar Animals</h4>
+          <ul><li><strong>Free play mode where kids can't sound bad</strong></li><li>Keep the animal-per-chord idea from the original Wild Chords</li><li>Win on craft and feel, not feature count</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="app__panel app__panel--visual reveal">
+      <div class="screens screens--grid5">
+        <div class="screens__item"><img src="screenshots/05b_loopimal/05b_loopimal_01.jpg" alt="Loopimal hero"></div>
+        <div class="screens__item"><img src="screenshots/05b_loopimal/05b_loopimal_02.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/05_melody_jams/05_melody_jams_01.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/05_melody_jams/05_melody_jams_02.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/05b_loopimal/05b_loopimal_03.jpg" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 10 — TOCA BAND ============= -->
+<section class="slide slide--app">
+  <div class="app__panels">
+    <div class="app__panel app__panel--text">
+      <div class="app__header reveal">
+        <span class="app__num">06 / 08</span>
+        <span class="app__tag">Free play · build a band on stage</span>
+      </div>
+      <h2 class="app__name reveal">Toca Band</h2>
+      <div class="app__parent reveal">Made by Toca Boca in Stockholm, Sweden. Their apps have been downloaded over 500 million times.</div>
+      <div class="reveal" style="margin-top:8px;"><a href="https://www.youtube.com/watch?v=BW3eXnjJom8" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Watch gameplay</a></div>
+      <div class="app__slots reveal">
+        <div class="app__slot"><div class="app__slot-label">Device</div><div class="app__slot-value">iPhone and iPad. Only comes with the Piknik app bundle now.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Cost</div><div class="app__slot-value">Used to be $1.99 · now only via Piknik subscription (~$4.99/month).</div></div>
+        <div class="app__slot"><div class="app__slot-label">Lessons</div><div class="app__slot-value">None. Pure free play. No rules, no scoring, no "wrong" way.</div></div>
+        <div class="app__slot"><div class="app__slot-label">The clever trick</div><div class="app__slot-value"><strong>A 3-row stage:</strong> drag characters to the back (quiet) or front (loud). <strong>Star spot on top:</strong> drag a character there and tap to make them solo.</div></div>
+        <div class="app__slot"><div class="app__slot-label">What's inside</div><div class="app__slot-value">16 characters, 48 sound loops. Tuned so every combo sounds great.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Who uses it</div><div class="app__slot-value">Was a top-10 kids app for years (2012–2015). The Toca Boca brand is a household name for parents.</div></div>
+      </div>
+      <div class="app__verdict reveal">
+        <div class="app__verdict-col app__verdict-col--pro">
+          <h4>What it does well</h4>
+          <ul><li>Drag things to the front to make them louder — kids get it instantly</li><li>The star spot turns passive play into active performance</li><li>Huge parent brand</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--con">
+          <h4>What it gets wrong</h4>
+          <ul><li>Kids can't save or share what they make</li><li>Doesn't teach any real music</li><li>The cheap one-time price is gone — only available in a subscription bundle</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--borrow">
+          <h4>Ideas for Guitar Animals</h4>
+          <ul><li><strong>A "star spot" where kids can tap to solo over the backing track</strong></li><li>Let kids drag animals closer or further to change volume</li><li>Plan a whole family: Guitar Animals, Drums Animals, Sing Animals</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="app__panel app__panel--visual reveal">
+      <div class="screens screens--grid5">
+        <div class="screens__item"><img src="screenshots/06_toca_band/06b_toca_band_web_01.jpg" alt="Toca Band hero"></div>
+        <div class="screens__item"><img src="screenshots/06_toca_band/06b_toca_band_web_02.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/06_toca_band/06b_toca_band_web_03.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/06_toca_band/06b_toca_band_web_04.jpg" alt=""></div>
+        <div class="screens__item"><img src="screenshots/06_toca_boca_jr/06_toca_boca_jr_01.jpg" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 11 — SAGO MINI MUSIC BOX ============= -->
+<section class="slide slide--app">
+  <div class="app__panels">
+    <div class="app__panel app__panel--text">
+      <div class="app__header reveal">
+        <span class="app__num">07 / 08</span>
+        <span class="app__tag">Free play · design reference (ages 2 to 4)</span>
+      </div>
+      <h2 class="app__name reveal">Sago Mini Music Box</h2>
+      <div class="app__parent reveal">Made by Sago Sago in Toronto, Canada. Known for a cast of cute named characters that show up across all their apps.</div>
+      <div class="reveal" style="margin-top:8px;"><a href="https://www.youtube.com/watch?v=CIoD-Vn15_U" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Watch Sago Mini World gameplay</a></div>
+      <div class="app__slots reveal">
+        <div class="app__slot"><div class="app__slot-label">Device</div><div class="app__slot-value">iPhone and Android. Comes inside Sago Mini World now.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Cost</div><div class="app__slot-value">Used to be $2.99 · now only via Sago Mini World (~$6.99/month).</div></div>
+        <div class="app__slot"><div class="app__slot-label">Lessons</div><div class="app__slot-value">None — just 3 simple nursery-style songs. Meant to be delightful, not educational.</div></div>
+        <div class="app__slot"><div class="app__slot-label">The clever trick</div><div class="app__slot-value"><strong>Each character has its own world:</strong> Jinja the cat in the snow, Harvey the dog, Jack the rabbit on the moon.</div></div>
+        <div class="app__slot"><div class="app__slot-label">How it works</div><div class="app__slot-value">Tap to play sounds. The speed of the song matches how fast the kid taps.</div></div>
+        <div class="app__slot"><div class="app__slot-label">How it makes money</div><div class="app__slot-value"><strong>No ads, nothing to buy inside. Won a "Parents' Choice" award.</strong> The cleanness itself is a selling point.</div></div>
+      </div>
+      <div class="app__verdict reveal">
+        <div class="app__verdict-col app__verdict-col--pro">
+          <h4>What it does well</h4>
+          <ul><li>A 2-year-old can use it alone</li><li>"No sneaky tricks" is a trust advantage with parents</li><li>Named characters in their own worlds bond kids emotionally</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--con">
+          <h4>What it gets wrong</h4>
+          <ul><li>Too simple for kids 6 to 12</li><li>Only 3 songs — 20 minutes of novelty, then done</li><li>Doesn't teach music</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--borrow">
+          <h4>Ideas for Guitar Animals</h4>
+          <ul><li><strong>Named animals with their own habitats: "Ellie the Elephant in the savanna"</strong></li><li>Let kids change song speed by how fast they tap</li><li>Publicly commit to "no sneaky tricks" as a brand promise</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="app__panel app__panel--visual reveal">
+      <div class="screens screens--grid4">
+        <div class="screens__item"><img src="screenshots/07_sago_mini_music_box/07_sago_mini_music_box_01.png" alt="Sago Mini hero"></div>
+        <div class="screens__item"><img src="screenshots/07_sago_mini_music_box/07_sago_mini_music_box_02.png" alt=""></div>
+        <div class="screens__item"><img src="screenshots/07_sago_mini_music_box/07_sago_mini_music_box_03.png" alt=""></div>
+        <div class="screens__item"><img src="screenshots/07_sago_mini_music_box/07_sago_mini_music_box_04.png" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 12 — CHROME MUSIC LAB ============= -->
+<section class="slide slide--app">
+  <div class="app__panels">
+    <div class="app__panel app__panel--text">
+      <div class="app__header reveal">
+        <span class="app__num">08 / 08</span>
+        <span class="app__tag">Free play · in a web browser · all ages</span>
+      </div>
+      <h2 class="app__name reveal">Chrome Music Lab</h2>
+      <div class="app__parent reveal">Made by Google's Creative Lab in March 2016. Designed by Alex Chen with help from audio engineer Yotam Mann.</div>
+      <div class="reveal" style="margin-top:8px;"><a href="https://www.youtube.com/watch?v=mzohqQi9UXE" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1px solid var(--accent); color:var(--accent-hover); font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:1.5px; text-decoration:none;"><span style="font-size:11px;">▶</span> Watch gameplay</a></div>
+      <div class="app__slots reveal">
+        <div class="app__slot"><div class="app__slot-label">Device</div><div class="app__slot-value"><strong>Web browser only.</strong> No app. Nothing to install. No account.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Cost</div><div class="app__slot-value"><strong>Free forever.</strong> Google doesn't even try to make money from it.</div></div>
+        <div class="app__slot"><div class="app__slot-label">What's inside</div><div class="app__slot-value">13 mini music toys: Song Maker (the main one), Rhythm, Shared Piano, Kandinsky, Melody Maker, and more.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Who it's for</div><div class="app__slot-value"><strong>Made for everyone — schools love it.</strong> Song Maker and Kandinsky work great for ages 6 to 12. Others are better for older kids.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Song Maker</div><div class="app__slot-value">A grid you tap to make a song. Pick your instrument and speed. <strong>Every song gets a shareable link</strong> you can send to anyone.</div></div>
+        <div class="app__slot"><div class="app__slot-label">How it's built</div><div class="app__slot-value">Open source (anyone can look at the code). Can take microphone input.</div></div>
+        <div class="app__slot"><div class="app__slot-label">Who uses it</div><div class="app__slot-value">Millions of classrooms worldwide. <strong>Every kids music app of the last 10 years has copied parts of it.</strong></div></div>
+      </div>
+      <div class="app__verdict reveal">
+        <div class="app__verdict-col app__verdict-col--pro">
+          <h4>What it does well</h4>
+          <ul><li>Nothing to install, nothing to pay — every teacher can use it tomorrow</li><li>Song Maker is the design that everyone else copies</li><li>Open source means it'll exist forever</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--con">
+          <h4>What it gets wrong</h4>
+          <ul><li>Not designed just for kids — teachers pick which parts work for which age</li><li>No path, no lessons — teachers supply the structure</li><li>Browser only, limited sounds, doesn't work offline</li></ul>
+        </div>
+        <div class="app__verdict-col app__verdict-col--borrow">
+          <h4>Ideas for Guitar Animals</h4>
+          <ul><li>A grid where kids can compose their own chord songs</li><li><strong>A shareable link for every song kids make = free word-of-mouth</strong></li><li>A free web version for classrooms = every guitar teacher becomes an evangelist</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="app__panel app__panel--visual reveal">
+      <div class="screens screens--grid5">
+        <div class="screens__item"><img src="screenshots/08_chrome_music_lab/03_song_maker.png" alt="Chrome Music Lab Song Maker"></div>
+        <div class="screens__item"><img src="screenshots/08_chrome_music_lab/01_official_grid.jpg" alt="Experiment grid"></div>
+        <div class="screens__item"><img src="screenshots/08_chrome_music_lab/02_shared_piano.png" alt=""></div>
+        <div class="screens__item"><img src="screenshots/08_chrome_music_lab/04_rhythm.png" alt=""></div>
+        <div class="screens__item"><img src="screenshots/08_chrome_music_lab/07_kandinsky.png" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 13 — COMPARATIVE MATRIX ============= -->
+<section class="slide">
+  <p class="slide__label reveal">Side-by-Side</p>
+  <h2 class="slide__heading reveal">The whole field, one table.</h2>
+  <div class="matrix-wrap reveal">
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>App</th>
+          <th>Does it teach?</th>
+          <th>How does the kid play?</th>
+          <th>What does it cost?</th>
+          <th>What it looks like</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Piano Maestro</td><td>Yes · 37 lessons in order</td><td>Real piano (microphone or plug-in)</td><td>$9.99/mo or $59.99/yr</td><td>Classroom-style, sheet music</td></tr>
+        <tr><td>Simply Piano</td><td>Yes · pick from 100+ courses</td><td>Real piano (microphone or plug-in)</td><td>$24.99/mo or $169.99/yr</td><td>Polished, song-based</td></tr>
+        <tr><td>Rhythm Cat</td><td>Yes · 60 rhythm levels</td><td>Tap the screen to the beat</td><td>$4.99 one-time</td><td>Cute cat mascot, classical music</td></tr>
+        <tr><td>Duolingo Music</td><td>Yes · one strict path</td><td>Tap an on-screen piano (no real instrument)</td><td>Free with limits · $84/yr to unlock</td><td>Cartoon style with Duo the owl</td></tr>
+        <tr><td>Melody Jams</td><td>No · just free play</td><td>Tap animal characters</td><td>$4.99 one-time</td><td>Clean, minimalist design</td></tr>
+        <tr><td>Loopimal</td><td>No · free play (everything in one key)</td><td>Tap + drag on a grid</td><td>$4.99 one-time</td><td>Clean, minimalist design</td></tr>
+        <tr><td>Toca Band</td><td>No · free play</td><td>Drag characters onto a stage</td><td>In Piknik bundle (~$4.99/mo)</td><td>Toca Boca cartoon style</td></tr>
+        <tr><td>Sago Mini Music Box</td><td>No · 3 preset songs</td><td>Tap to play</td><td>In Sago Mini World subscription</td><td>Soft, storybook illustrations</td></tr>
+        <tr><td>Chrome Music Lab</td><td>No · 13 music mini-toys</td><td>Click in the browser (can use mic)</td><td><strong style="color:var(--accent);">Free</strong></td><td>Bright, geometric, Google-style</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============= SLIDE 14 — DIVIDER: PATTERNS ============= -->
+<section class="slide slide--divider">
+  <span class="slide__number">02</span>
+  <div class="slide__content reveal">
+    <p class="slide__label">Part Two</p>
+    <h2 class="slide__heading">What the best kids apps do.</h2>
+    <p class="slide__subtitle" style="max-width:700px; margin-top:12px;">Four things show up in every app that works. Guitar Animals already has all four.</p>
+  </div>
+</section>
+
+<!-- ============= SLIDE 15 — FOUR PATTERNS TO ADOPT ============= -->
+<section class="slide">
+  <p class="slide__label reveal">What Works</p>
+  <h2 class="slide__heading reveal">Four things the best kids apps all do.</h2>
+  <div class="patterns">
+    <div class="pattern reveal">
+      <div class="pattern__num">01</div>
+      <h3 class="pattern__title">Every sound is a character</h3>
+      <p class="pattern__body">Every successful kids music app uses animals or characters for sounds. Toca Band has 16 musicians, Loopimal has 9 animals, Sago has its named cast, <strong>and the original Wild Chords had a duck, an ape, and an elephant.</strong> "C major chord" is meaningless to a kid. "Ellie the Elephant's song" they get right away.</p>
+    </div>
+    <div class="pattern reveal">
+      <div class="pattern__num">02</div>
+      <h3 class="pattern__title">A mode where you can't lose</h3>
+      <p class="pattern__body">Loopimal only uses notes that go together. Toca Band pre-tunes every sound to match. Sago plays preset songs. <strong>In "free play" mode, whatever the kid does sounds good.</strong> Lesson mode has right and wrong answers. Free play has neither. Two different headspaces.</p>
+    </div>
+    <div class="pattern reveal">
+      <div class="pattern__num">03</div>
+      <h3 class="pattern__title">Anyone can start, no reading needed</h3>
+      <p class="pattern__body">Toca Band, Loopimal, Sago, Chrome Music Lab — none of them require reading or setup. Kid touches the screen, music happens. Duolingo Music takes about 10 seconds to start. <strong>Piano Maestro is the odd one out</strong> (needs an adult to set it up) and gets the most first-time complaints.</p>
+    </div>
+    <div class="pattern reveal">
+      <div class="pattern__num">04</div>
+      <h3 class="pattern__title">Visible change, not just numbers</h3>
+      <p class="pattern__body">Rhythm Cat's cat gets fancier. Simply Piano's song tiles fill up. Duolingo's path lights up. <strong>Pure point counters motivate parents, not kids.</strong> Kids need to see something they care about change — a character or a world — not a score.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 16 — PATTERNS TO AVOID ============= -->
+<section class="slide">
+  <p class="slide__label reveal">What Not To Do</p>
+  <h2 class="slide__heading reveal">Mistakes other apps have made.</h2>
+  <div class="avoid-grid">
+    <div class="avoid reveal">
+      <h3 class="avoid__title">iPad-only</h3>
+      <p class="avoid__body">Piano Maestro is losing ground to Simply Piano and Duolingo because those work on phones. Kids 8+ have phones. Design for phones first.</p>
+    </div>
+    <div class="avoid reveal">
+      <h3 class="avoid__title">Being too strict on young kids</h3>
+      <p class="avoid__body">Rhythm Cat's timing rules push out kids under 7. Duolingo's "hearts" system is parents' #1 complaint. Separate practice (no punishment) from performance (scored).</p>
+    </div>
+    <div class="avoid reveal">
+      <h3 class="avoid__title">Sneaky subscriptions</h3>
+      <p class="avoid__body">Simply Piano's $170/year auto-charge from a free trial. Parent reviews are vicious. Being transparent about pricing becomes a selling point. Sago and Yatatoy already own this territory.</p>
+    </div>
+    <div class="avoid reveal">
+      <h3 class="avoid__title">Free play with nowhere to go</h3>
+      <p class="avoid__body">Loopimal and Toca Band lose kids after about two weeks. Free play alone doesn't hold attention. It should be a gateway into real lessons, not the whole app.</p>
+    </div>
+    <div class="avoid reveal">
+      <h3 class="avoid__title">Tapping and calling it "learning"</h3>
+      <p class="avoid__body">Duolingo Music is already being criticized for this. Guitar Animals must never claim "learn guitar" when the kid is only tapping a screen. The real guitar has to be the reward.</p>
+    </div>
+    <div class="avoid reveal">
+      <h3 class="avoid__title">Nothing to save or share</h3>
+      <p class="avoid__body">Toca Band's biggest weakness. Every song a kid makes should be something they can save and show off. Chrome Music Lab nailed this.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 17 — SANDBOX CONCEPT DEEP-DIVE ============= -->
+<section class="slide">
+  <p class="slide__label reveal">Zoom In · Free Play</p>
+  <h2 class="slide__heading reveal">What "free play" really means.</h2>
+  <p class="slide__body reveal" style="max-width:1100px; color:var(--text-dim); margin:6px 0 clamp(14px,2vh,20px);">
+    A mode with <strong style="color:var(--text-bright);">no goal, no way to lose, no wrong answer.</strong> The kid touches the screen, music happens, and it sounds good. Whatever they do, it works. The opposite of a lesson (which has right answers and failure).
+  </p>
+
+  <div class="reveal" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:clamp(12px,1.5vw,20px); margin-bottom:clamp(14px,2vh,20px); max-width:1400px;">
+
+    <div style="border:1px solid var(--border); padding:clamp(14px,1.6vh,20px); background:var(--surface);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:8px;">Toca Band</div>
+      <p style="margin:0; font-size:clamp(12px,1.05vw,15px); line-height:1.55; color:var(--text);">Drag 16 musicians onto a stage. <strong style="color:var(--text-bright);">Every sound is pre-tuned to fit together.</strong> You can't make it sound bad.</p>
+    </div>
+
+    <div style="border:1px solid var(--border); padding:clamp(14px,1.6vh,20px); background:var(--surface);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:8px;">Loopimal</div>
+      <p style="margin:0; font-size:clamp(12px,1.05vw,15px); line-height:1.55; color:var(--text);">Tap a grid, animals dance to your loops. <strong style="color:var(--text-bright);">Only uses notes that go together.</strong> Every combo sounds nice.</p>
+    </div>
+
+    <div style="border:1px solid var(--border); padding:clamp(14px,1.6vh,20px); background:var(--surface);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:8px;">Chrome Music Lab — Song Maker</div>
+      <p style="margin:0; font-size:clamp(12px,1.05vw,15px); line-height:1.55; color:var(--text);">Click dots on a grid, and it plays as a song. <strong style="color:var(--text-bright);">The notes and speed are pre-set to work.</strong> The result is always musical.</p>
+    </div>
+
+    <div style="border:1px solid var(--border); padding:clamp(14px,1.6vh,20px); background:var(--surface);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:8px;">Sago Mini Music Box</div>
+      <p style="margin:0; font-size:clamp(12px,1.05vw,15px); line-height:1.55; color:var(--text);">Tap characters to play pre-written notes. <strong style="color:var(--text-bright);">Only 3 songs in total.</strong> Kids change the feel, they don't actually compose.</p>
+    </div>
+
+  </div>
+
+  <div class="reveal" style="display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,2vw,28px); max-width:1400px;">
+    <div style="padding:clamp(12px,1.4vh,18px) 0; border-top:1px solid var(--border-bright);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent-hover); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px;">Why it works on kids</div>
+      <p style="margin:0; font-size:clamp(13px,1.1vw,15px); color:var(--text); line-height:1.55;">No frustration. The kid feels like a <strong style="color:var(--text-bright);">maker</strong>, not a student. <em>"I made this!"</em> feels way better than <em>"I got it right."</em></p>
+    </div>
+    <div style="padding:clamp(12px,1.4vh,18px) 0; border-top:1px solid var(--border-bright);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent-hover); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px;">Why it can't be a business on its own</div>
+      <p style="margin:0; font-size:clamp(13px,1.1vw,15px); color:var(--text); line-height:1.55;"><strong style="color:var(--text-bright);">Kids get bored in about 2 weeks.</strong> Nothing to work toward, so nothing to come back for. Loopimal and Toca Band survive as $4.99 one-time apps, not subscriptions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 18 — SANDBOX FOR GUITAR ANIMALS ============= -->
+<section class="slide">
+  <p class="slide__label reveal">Zoom In · Free Play in Guitar Animals</p>
+  <h2 class="slide__heading reveal">Chris already has this thinking in his plan.</h2>
+  <p class="slide__body reveal" style="max-width:1200px; color:var(--text-dim); margin:6px 0 clamp(14px,2vh,18px);">
+    Three places the "free play" idea is <strong style="color:var(--text-bright);">already built into the current design.</strong>
+  </p>
+
+  <div class="reveal" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:clamp(12px,1.5vw,18px); margin-bottom:clamp(14px,2vh,20px); max-width:1500px;">
+
+    <div style="padding:clamp(12px,1.4vh,18px); border-left:3px solid var(--accent); background:var(--surface);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px;">01 — The 4-year-old story</div>
+      <p style="margin:0; font-size:clamp(12px,1vw,14px); color:var(--text); line-height:1.5;">A 4-year-old played the same Wild Chords level <strong style="color:var(--text-bright);">20 times and got zero stars — she was just watching the cartoon.</strong> The game should encourage this, not punish it. That's free play in action: don't lock the experience behind "playing correctly."</p>
+    </div>
+
+    <div style="padding:clamp(12px,1.4vh,18px); border-left:3px solid var(--accent); background:var(--surface);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px;">02 — How content is planned</div>
+      <p style="margin:0; font-size:clamp(12px,1vw,14px); color:var(--text); line-height:1.5;"><em>"One chord → 20 versions of it in different styles and speeds."</em> <strong style="color:var(--text-bright);">Same skill, new entertainment every time.</strong> Toca Band's "remix it" logic applied to guitar lessons — variety comes from packaging, not new skills.</p>
+    </div>
+
+    <div style="padding:clamp(12px,1.4vh,18px); border-left:3px solid var(--accent); background:var(--surface);">
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px;">03 — Tools as toys</div>
+      <p style="margin:0; font-size:clamp(12px,1vw,14px); color:var(--text); line-height:1.5;">The guitar tuner and chord practice are <strong style="color:var(--text-bright);">always open and always rewarding — never a wall.</strong> They turn utility features into tiny playgrounds. Already in Chris's plan.</p>
+    </div>
+
+  </div>
+
+  <div class="reveal" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:clamp(10px,1vw,14px); max-width:1500px; margin-bottom:clamp(12px,1.5vh,18px);">
+
+    <div style="border:1px solid var(--border); padding:clamp(10px,1.2vh,14px);">
+      <div style="font-family:var(--font-heading); font-size:clamp(20px,2vw,28px); color:var(--accent); font-weight:700; line-height:1; margin-bottom:6px;">01</div>
+      <h4 style="font-family:var(--font-heading); font-size:clamp(13px,1.1vw,15px); color:var(--text-bright); margin:0 0 6px; font-weight:600; line-height:1.25;">Every lesson is also a show</h4>
+      <p style="margin:0; font-size:clamp(11px,0.95vw,13px); color:var(--text-dim); line-height:1.45;">Even if the kid scores zero stars, the level still plays through like a cartoon. Animals walk, music plays, it ends on a high note. Stars are extra — never a barrier.</p>
+    </div>
+
+    <div style="border:1px solid var(--border); padding:clamp(10px,1.2vh,14px);">
+      <div style="font-family:var(--font-heading); font-size:clamp(20px,2vw,28px); color:var(--accent); font-weight:700; line-height:1; margin-bottom:6px;">02</div>
+      <h4 style="font-family:var(--font-heading); font-size:clamp(13px,1.1vw,15px); color:var(--text-bright); margin:0 0 6px; font-weight:600; line-height:1.25;">"Jam with the animals" mode (no guitar needed)</h4>
+      <p style="margin:0; font-size:clamp(11px,0.95vw,13px); color:var(--text-dim); line-height:1.45;">Tap any animal and its chord joins a pre-made backing track. It always sounds good together. Combines Toca Band's stage idea, Loopimal's "can't sound bad" trick, and Wild Chords' zoo. Kids can play even without a real guitar.</p>
+    </div>
+
+    <div style="border:1px solid var(--border); padding:clamp(10px,1.2vh,14px);">
+      <div style="font-family:var(--font-heading); font-size:clamp(20px,2vw,28px); color:var(--accent); font-weight:700; line-height:1; margin-bottom:6px;">03</div>
+      <h4 style="font-family:var(--font-heading); font-size:clamp(13px,1.1vw,15px); color:var(--text-bright); margin:0 0 6px; font-weight:600; line-height:1.25;">The zoo itself is a playground</h4>
+      <p style="margin:0; font-size:clamp(11px,0.95vw,13px); color:var(--text-dim); line-height:1.45;">Kids pet animals, dress them up, feed them, unlock the master crocodile. Already in Chris's plan — just design it with Toca Boca polish, not like a menu.</p>
+    </div>
+
+    <div style="border:1px solid var(--border); padding:clamp(10px,1.2vh,14px);">
+      <div style="font-family:var(--font-heading); font-size:clamp(20px,2vw,28px); color:var(--accent); font-weight:700; line-height:1; margin-bottom:6px;">04</div>
+      <h4 style="font-family:var(--font-heading); font-size:clamp(13px,1.1vw,15px); color:var(--text-bright); margin:0 0 6px; font-weight:600; line-height:1.25;">Bonus missions that feel like play</h4>
+      <p style="margin:0; font-size:clamp(11px,0.95vw,13px); color:var(--text-dim); line-height:1.45;">"Feed Ellie her favorite song." "Dress Goat for his concert." Fun little objectives that feel like play, not homework. No grades.</p>
+    </div>
+
+    <div style="border:1px solid var(--border); padding:clamp(10px,1.2vh,14px);">
+      <div style="font-family:var(--font-heading); font-size:clamp(20px,2vw,28px); color:var(--accent); font-weight:700; line-height:1; margin-bottom:6px;">05</div>
+      <h4 style="font-family:var(--font-heading); font-size:clamp(13px,1.1vw,15px); color:var(--text-bright); margin:0 0 6px; font-weight:600; line-height:1.25;">Chord practice as a personal playground</h4>
+      <p style="margin:0; font-size:clamp(11px,0.95vw,13px); color:var(--text-dim); line-height:1.45;">Pick any animal, strum any way you want, get a fun visual + sound reward. Pure exploration, no goal. The opposite of an "exercise."</p>
+    </div>
+
+  </div>
+
+  <div class="reveal" style="margin-top:clamp(10px,1.5vh,16px); max-width:1500px; padding:clamp(20px,2.4vh,30px) clamp(22px,2.5vw,34px); border:2px solid var(--accent); border-left:8px solid var(--accent); background:linear-gradient(135deg, var(--accent-dim) 0%, var(--accent-dim2) 100%); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+      <span style="display:inline-block; width:8px; height:8px; background:var(--accent); border-radius:50%; box-shadow:0 0 12px var(--accent);"></span>
+      <span style="color:var(--accent-hover); font-family:var(--font-mono); font-size:clamp(11px,1vw,13px); text-transform:uppercase; letter-spacing:2px; font-weight:700;">The core trade-off</span>
+    </div>
+    <p style="margin:0; font-size:clamp(15px,1.35vw,19px); color:var(--text-bright); line-height:1.5; font-weight:500;">
+      Pure free play loses kids after about 2 weeks. Pure lesson grinding loses them after about 4 weeks. <strong style="color:var(--color-white);">Only a mix of the two actually keeps kids coming back.</strong> Pet-the-animal moments + fun side quests layered on top of real lessons — that's the mix. The danger: building lessons that feel like pass/fail tests and leaving all the joy in the free-play mode. Don't separate them. <strong style="color:var(--color-white);">Lessons need to feel like free play even when they're scoring the kid.</strong> That's the trick.
+    </p>
+  </div>
+</section>
+
+<!-- ============= SLIDE 19 — DIVIDER: RECOMMENDATIONS ============= -->
+<section class="slide slide--divider">
+  <span class="slide__number">03</span>
+  <div class="slide__content reveal">
+    <p class="slide__label">Part Three</p>
+    <h2 class="slide__heading">What to build.</h2>
+    <p class="slide__subtitle" style="max-width:700px; margin-top:12px;">Ten specific suggestions for Guitar Animals, based on everything we just saw.</p>
+  </div>
+</section>
+
+<!-- ============= SLIDE 18 — RECOMMENDATIONS 1-5 ============= -->
+<section class="slide">
+  <p class="slide__label reveal">Suggestions · Part 1</p>
+  <h2 class="slide__heading reveal">How the app should work.</h2>
+  <div class="recs">
+    <div class="rec reveal">
+      <div class="rec__num">01</div>
+      <div class="rec__text">
+        <h4>Keep the animal idea. Grow it.</h4>
+        <p>Each guitar chord is an animal. Duck = D chord. Ape = A chord. Elephant = E chord. Kids remember animals, not letters. Add more: Goat = G, Cat = C, Frog = F. <strong>The animals become the kid's chord chart.</strong></p>
+      </div>
+    </div>
+    <div class="rec reveal">
+      <div class="rec__num">02</div>
+      <div class="rec__text">
+        <h4>Two ways to play, always.</h4>
+        <p><strong>Free play</strong> (mess around, can't lose) and <strong>Lessons</strong> (a clear path from step 1 to the end). Free play is how you get kids in. Lessons are how you keep them coming back.</p>
+      </div>
+    </div>
+    <div class="rec reveal">
+      <div class="rec__num">03</div>
+      <div class="rec__text">
+        <h4>No guitar? Start with taps.</h4>
+        <p>A kid without a real guitar still gets to play — by tapping animals on the screen. After a few weeks of tapping, the app says: "You're ready for a real guitar." <strong>The real guitar becomes the prize, not a wall.</strong></p>
+      </div>
+    </div>
+    <div class="rec reveal">
+      <div class="rec__num">04</div>
+      <div class="rec__text">
+        <h4>Use modern AI to listen to the kid play.</h4>
+        <p>Back in 2011, the phone wasn't smart enough to tell a messy kid D chord apart from a bad one. Today's iPhones can. That's the single reason this whole idea works now and didn't work then.</p>
+      </div>
+    </div>
+    <div class="rec reveal">
+      <div class="rec__num">05</div>
+      <div class="rec__text">
+        <h4>Three clear prices. No tricks.</h4>
+        <p>Free version (a handful of chords and songs, plus free for schools). A one-time payment of about $10 for the full lesson path. A monthly plan for families who want the big song library. <strong>Be upfront. That's part of the brand.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 19 — RECOMMENDATIONS 6-12 ============= -->
+<section class="slide">
+  <p class="slide__label reveal">Suggestions · Part 2</p>
+  <h2 class="slide__heading reveal">How to get it into kids' hands.</h2>
+  <div class="recs">
+    <div class="rec reveal">
+      <div class="rec__num">06</div>
+      <div class="rec__text">
+        <h4>Build a tool for guitar teachers from day one.</h4>
+        <p>Piano Maestro owns piano teachers because it gives them a tool to assign homework and see how kids practiced. <strong>No one has built that for guitar teachers yet.</strong> Huge opening.</p>
+      </div>
+    </div>
+    <div class="rec reveal">
+      <div class="rec__num">07</div>
+      <div class="rec__text">
+        <h4>Every song a kid makes gets its own link.</h4>
+        <p>Kid makes up a song in free play. The app generates a link. Kid sends it to grandma. Grandma opens it in a browser — no app needed. <strong>Free marketing, and the kid feels proud.</strong></p>
+      </div>
+    </div>
+    <div class="rec reveal">
+      <div class="rec__num">08</div>
+      <div class="rec__text">
+        <h4>A free version for school computers.</h4>
+        <p>Simple browser version, taps only, no sign-up, no microphone. Every elementary music teacher can use it tomorrow. The paid phone app sits on top as the upgrade. <strong>Chrome Music Lab proved this works.</strong></p>
+      </div>
+    </div>
+    <div class="rec reveal">
+      <div class="rec__num">09</div>
+      <div class="rec__text">
+        <h4>Polish is the whole point.</h4>
+        <p>The apps that win don't have more features — they feel hand-made. Every animation feels made by a human. <strong>Guitar Animals can't ship with cheap stock animations.</strong> Every chord sound should be recorded by a real guitarist. Budget for that up front.</p>
+      </div>
+    </div>
+    <div class="rec reveal">
+      <div class="rec__num">10</div>
+      <div class="rec__text">
+        <h4>Make a kids app. Not a grown-up app with a kids button.</h4>
+        <p>Simply Piano has a "Kids Mode" tab, and it's obviously bolted on. Don't do that. Kids aged 6 to 12 deserve their own app with their own look, sound, and feel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 20 — DIVIDER: APPENDIX ============= -->
+<section class="slide slide--divider">
+  <span class="slide__number">04</span>
+  <div class="slide__content reveal">
+    <p class="slide__label">Background</p>
+    <h2 class="slide__heading">Why no one has made this yet.</h2>
+    <p class="slide__subtitle" style="max-width:700px; margin-top:12px;">Kids want this. The reason it doesn't exist is that the technology only just caught up.</p>
+  </div>
+</section>
+
+<!-- ============= SLIDE 21 — THE THESIS ============= -->
+<section class="slide">
+  <p class="slide__label reveal">The Argument</p>
+  <h2 class="slide__heading reveal">The opening exists because the problem is hard.</h2>
+  <p class="thesis-hero reveal">
+    Wild Chords, a kids guitar app from 2011, was <strong>the #1 free app in Finland</strong>. GuitarBots, made by the same team, got <strong>millions of people in a browser</strong>. Kids want this — that's been proven twice.
+  </p>
+  <p class="thesis-hero reveal" style="color:var(--accent); font-weight:700;">
+    What keeps killing it: the app can't reliably hear a kid's messy playing · kids' fingers aren't strong enough for hard chords · cheap kid guitars go out of tune fast · when the app says "wrong" enough times, kids quit.
+  </p>
+  <p class="thesis-footnote reveal">
+    Every serious attempt either gave up on kids and pivoted to adults (Wild Chords became Yousician), got shut down (GuitarBots), or required expensive add-on hardware (Rocksmith needs a $30 cable, Fret Zealot needs a $150 light strip for the fretboard). <strong style="color:var(--text-bright);">No one has shipped a kids guitar app that works using just a phone and a regular guitar.</strong>
+  </p>
+</section>
+
+<!-- ============= SLIDE 22 — FAILED ATTEMPTS ============= -->
+<section class="slide">
+  <p class="slide__label reveal">The Graveyard</p>
+  <h2 class="slide__heading reveal">Everyone who tried. Why each one failed.</h2>
+  <div class="failures">
+    <div class="failure reveal">
+      <div class="failure__year">2011 — 2014</div>
+      <h3 class="failure__name">Wild Chords — by Ovelin (the company that became Yousician)</h3>
+      <p class="failure__why">An iPad game where a kid helps animals escape a zoo by playing guitar chords. Duck = D, Ape = A, Elephant = E. <strong>Hit #1 free app in Finland.</strong> Kids wanted it.<br>
+      <strong>Why it died:</strong> the phone mic couldn't reliably tell if a kid was playing the chord right or just making buzzy noise. And after three animals, kids lost interest. In 2014, the team gave up on kids and built Yousician for adults. <em>Chris was there. He knows what really happened.</em></p>
+    </div>
+    <div class="failure reveal">
+      <div class="failure__year">2012 — 2014</div>
+      <h3 class="failure__name">GuitarBots — also by Ovelin</h3>
+      <p class="failure__why">A guitar game you played in a web browser. Not aimed only at kids, but similar cartoon style.<br>
+      <strong>Why it died:</strong> same listening problem as Wild Chords, plus browsers at the time weren't built to handle microphone audio well. It was folded into Yousician.</p>
+    </div>
+    <div class="failure reveal">
+      <div class="failure__year">2011 — today</div>
+      <h3 class="failure__name">Rocksmith — by Ubisoft (the video game company)</h3>
+      <p class="failure__why">Never made a kids mode. Requires a special <strong>$30 cable</strong> to plug the guitar into the phone or console — because the designers didn't trust the microphone either.<br>
+      <strong>The takeaway:</strong> that extra cable stopped most people from ever trying it. A follow-up subscription version launched in 2021 and quietly stalled by 2023. <em>If kids are going to use this, the phone microphone has to actually work.</em></p>
+    </div>
+    <div class="failure reveal">
+      <div class="failure__year">Today</div>
+      <h3 class="failure__name">Fret Zealot · Chordify · Fender Play Kids</h3>
+      <p class="failure__why">Fret Zealot = a $150 LED strip that sticks to the guitar and lights up where to put your fingers. Avoids the listening problem by using hardware instead.<br>
+      Chordify, Fender Play, Jamzone = all grown-up apps with some kid-friendly songs sprinkled in. <strong>None of them were designed for how kids think, play, or get bored.</strong><br>
+      <em>As of 2026, no one is shipping a true kids guitar app that runs on just a phone.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 23 — WHY IT'S HARDER THAN PIANO ============= -->
+<section class="slide">
+  <p class="slide__label reveal">Guitar vs Piano</p>
+  <h2 class="slide__heading reveal">Why guitar is much harder than piano for a kid.</h2>
+  <table class="diff-table reveal">
+    <thead>
+      <tr><th>What's going on</th><th>Piano</th><th>Kids Guitar</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>How hard you have to press</td><td>About the weight of a grape per key</td><td class="harder">Two to four times harder, plus you have to squeeze the neck</td></tr>
+      <tr><td>Can the app tell what you played?</td><td>Yes — one clean note at a time</td><td class="harder">Six strings ringing at once, plus buzz and noise — much harder to hear</td></tr>
+      <tr><td>Staying in tune</td><td>Once a year is fine</td><td class="harder">A cheap kid guitar goes out of tune every single time you pick it up</td></tr>
+      <tr><td>The hardest chords</td><td>There aren't really any</td><td class="harder">F and B chords need a finger grip most kids under 10 don't have yet</td></tr>
+      <tr><td>Knowing if you did it right</td><td>You can see the key you pushed</td><td class="harder">You have to listen AND feel your fingers AND look at the fret — three things at once</td></tr>
+      <tr><td>How long kids stick with it</td><td>About 12 weeks</td><td class="harder">About 4 weeks (what industry folks say, not a proven number)</td></tr>
+    </tbody>
+  </table>
+  <p class="slide__body reveal" style="margin-top:clamp(12px,2vh,20px); max-width:1100px; color:var(--text-dim); font-size:clamp(13px,1.2vw,16px);">
+    <strong style="color:var(--text-bright);">Here's the thing that kept killing kids guitar apps for 12 years:</strong> when a 7-year-old plays a D chord, the microphone picks up the right note plus some buzz, plus a string ringing that shouldn't be, plus the dog in the next room. Old apps would say "wrong." The kid tries again. Same answer. <em style="color:var(--accent);">In 8 minutes, the kid gives up — and doesn't come back.</em>
+  </p>
+</section>
+
+<!-- ============= SLIDE 24 — WHAT HASN'T BEEN TRIED ============= -->
+<section class="slide">
+  <p class="slide__label reveal">The Edge</p>
+  <h2 class="slide__heading reveal">What no one has tried — and what Guitar Animals should do.</h2>
+  <div class="patterns">
+    <div class="pattern reveal">
+      <div class="pattern__num">01</div>
+      <h3 class="pattern__title">Train the app specifically on how kids actually play</h3>
+      <p class="pattern__body">Not a generic "is this a D chord" detector. A listening system <strong>trained on thousands of hours of 7-year-olds playing messy D chords</strong> — so it learns "yep, that's a D, just a little messy." This is possible on today's iPhone. It wasn't in 2011.</p>
+    </div>
+    <div class="pattern reveal">
+      <div class="pattern__num">02</div>
+      <h3 class="pattern__title">Score kids on a sliding scale, not pass/fail</h3>
+      <p class="pattern__body"><strong>Great D · close enough · not yet.</strong> In free play, "close enough" still counts — the kid keeps going. In lessons, the app asks for "great." Kids don't get shut down for being a little off.</p>
+    </div>
+    <div class="pattern reveal">
+      <div class="pattern__num">03</div>
+      <h3 class="pattern__title">Tell parents which kid guitar to actually buy</h3>
+      <p class="pattern__body">Partner with Loog, Luna, or Yamaha. The app shows parents: "For a 7-year-old, here are three good guitars under $80." <strong>Stops the most common failure — the kid's guitar is too big, too hard to press, or won't stay in tune.</strong></p>
+    </div>
+    <div class="pattern reveal">
+      <div class="pattern__num">04</div>
+      <h3 class="pattern__title">The co-founder of Yousician is on this team</h3>
+      <p class="pattern__body">Chris was there for Wild Chords in 2011. He knows which ideas didn't work and why. <strong>Nobody else starting from zero has that.</strong> The bet pays off because the people rebuilding it already lived through the last failure.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 25 — OPEN QUESTIONS ============= -->
+<section class="slide">
+  <p class="slide__label reveal">Things we still need to figure out</p>
+  <h2 class="slide__heading reveal">Questions for Chris, before we go build.</h2>
+  <div class="questions">
+    <div class="question reveal">
+      <div class="question__num">01</div>
+      <p class="question__text">Who builds the "listening" tech? Us, a ready-made kit from a company like Dolby, or a hired AI team? This one choice changes the whole plan.</p>
+    </div>
+    <div class="question reveal">
+      <div class="question__num">02</div>
+      <p class="question__text">Do we reuse the old Wild Chords animals and story, or design brand new characters?</p>
+    </div>
+    <div class="question reveal">
+      <div class="question__num">03</div>
+      <p class="question__text">For songs: do we pay to license famous kid songs (like Simply Piano did with Disney), or stick to old folk songs we don't have to pay for?</p>
+    </div>
+    <div class="question reveal">
+      <div class="question__num">04</div>
+      <p class="question__text">Do we build the guitar-teacher tool at launch, or wait for version 1.5? It's a big advantage, but it eats time we need for polish.</p>
+    </div>
+    <div class="question reveal">
+      <div class="question__num">05</div>
+      <p class="question__text">Is this the first of many (Drums Animals, Sing Animals, Piano Animals), or does Guitar Animals stand alone?</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============= SLIDE 26 — SOURCES & METHODOLOGY ============= -->
+<section class="slide">
+  <p class="slide__label reveal">Where the information came from</p>
+  <h2 class="slide__heading reveal">What we looked up, what we know for sure, what we're guessing at.</h2>
+
+  <div class="reveal" style="display:grid; grid-template-columns:1.2fr 1fr; gap:clamp(20px,2.5vw,40px); margin-top:clamp(12px,1.8vh,18px); max-width:1500px;">
+
+    <div>
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px;">How we did the research</div>
+      <ul style="list-style:none; padding:0; margin:0 0 clamp(16px,2vh,22px) 0; font-size:clamp(12px,1.05vw,15px); line-height:1.7; color:var(--text);">
+        <li><strong style="color:var(--text-bright);">We pulled live data from the Apple App Store</strong> — names, prices, screenshots, reviews (Piano Maestro, Simply Piano, Rhythm Cat, Toca Boca Jr, Sago Mini World)</li>
+        <li><strong style="color:var(--text-bright);">We read press coverage and old reviews on the open web</strong> for Duolingo Music, the apps that got pulled, and the history of Wild Chords</li>
+        <li><strong style="color:var(--text-bright);">We used an AI research tool (Perplexity)</strong> to help summarize how each app teaches and what real users say</li>
+        <li><strong style="color:var(--text-bright);">Every screenshot has a real source URL.</strong> Nothing in here is made up.</li>
+      </ul>
+
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px;">What's solid vs. what's educated guess</div>
+      <p style="font-size:clamp(12px,1.05vw,14px); line-height:1.55; color:var(--text-dim); margin:0 0 10px 0;"><strong style="color:var(--accent-hover);">Solid (we can point at the source):</strong> every app's name, price, screenshots, the company behind it, its ranking on the App Store, teacher complaints about Piano Maestro's pitch detection, Wild Chords being #1 in Finland, Rocksmith needing its cable, Fret Zealot's $150 LED strip.</p>
+      <p style="font-size:clamp(12px,1.05vw,14px); line-height:1.55; color:var(--text-dim); margin:0 0 10px 0;"><strong style="color:var(--accent-hover);">Industry wisdom, not a published fact:</strong> the specific reasons Wild Chords and GuitarBots failed — pitch detection breaking down, kids' fingers being too weak, guitars going out of tune, kids quitting after about 4 weeks. Ovelin and Yousician never published a post-mortem, so we pieced this together from category analysis and general knowledge about teaching kids guitar. <strong style="color:var(--text-bright);">Chris is the one who really knows.</strong></p>
+      <p style="font-size:clamp(12px,1.05vw,14px); line-height:1.55; color:var(--text-dim); margin:0;"><strong style="color:var(--accent-hover);">Our opinion:</strong> "Modern iPhone AI changes the game." We believe this based on what new iPhones can do, but it's our strategic take — not a quote from a study.</p>
+    </div>
+
+    <div>
+      <div style="font-family:var(--font-mono); font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px;">Where each app's info came from</div>
+      <table class="diff-table" style="margin-top:0;">
+        <thead>
+          <tr><th>App</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Piano Maestro</td><td>App Store ID 564177953 · JoyTunes site · teacher reviews</td></tr>
+          <tr><td>Simply Piano (Kids)</td><td>App Store ID 1019442026 · JoyTunes blog · App Store reviews</td></tr>
+          <tr><td>Rhythm Cat (Melody Cats series)</td><td>App Store ID 583711348 · LMuse / Melody Cats site · App Store reviews</td></tr>
+          <tr><td>Duolingo Music</td><td>blog.duolingo.com/music-course/ · in-app inside Duolingo (570060128)</td></tr>
+          <tr><td>Melody Jams</td><td>App Store ID 1094833642 · Melody Jams Inc. (James Bartley)</td></tr>
+          <tr><td>Loopimal</td><td>yatatoy.com · App Store ID 964743113</td></tr>
+          <tr><td>Toca Band</td><td>148apps + HB archive (delisted SKU) · Toca Boca Jr (943869618)</td></tr>
+          <tr><td>Sago Mini Music Box</td><td>bridgingapps.org review · HB archive · Sago Mini World (874425722)</td></tr>
+          <tr><td>Chrome Music Lab</td><td>musiclab.chromeexperiments.com · Toronto Arts Academy review (2024) · GitHub repo</td></tr>
+          <tr><td>Wild Chords (appendix)</td><td>Archived press 2011–2014 · Pocket Gamer / TouchArcade reviews · Ovelin → Yousician corporate history</td></tr>
+          <tr><td>GuitarBots, Rocksmith, Fret Zealot</td><td>Ubisoft / Fret Zealot product pages · industry teardowns · Wayback Machine</td></tr>
+        </tbody>
+      </table>
+      <p style="font-family:var(--font-mono); font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-top:14px;">Total screenshots collected: <span style="color:var(--text);">63 images in 11 folders</span> · Full write-up: <span style="color:var(--text);">research-findings.md</span></p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============= SLIDE 27 — CLOSING ============= -->
+<section class="slide slide--closing">
+  <div class="reveal">
+    <p class="slide__label">Closing</p>
+    <h2 class="closing__big">Nobody has owned kids guitar for <em>12 years.</em><br>The technology that makes it finally possible shipped <em>this year.</em></h2>
+  </div>
+  <p class="closing__small reveal">Prepared by ICG · Offbeat Studios · Yousician · For Chimera · 2026-04-14</p>
+</section>
+
+</div>
+
+<script>
+class SlideEngine {
+  constructor() {
+    this.deck = document.querySelector('.deck');
+    this.slides = [...document.querySelectorAll('.slide')];
+    this.current = 0;
+    this.total = this.slides.length;
+    this.buildChrome();
+    this.bindEvents();
+    this.observe();
+    this.update();
+  }
+
+  buildChrome() {
+    var bar = document.createElement('div');
+    bar.className = 'deck-progress';
+    document.body.appendChild(bar);
+    this.bar = bar;
+
+    var dots = document.createElement('div');
+    dots.className = 'deck-dots';
+    var self = this;
+    this.slides.forEach(function(_, i) {
+      var d = document.createElement('button');
+      d.className = 'deck-dot';
+      d.title = 'Slide ' + (i + 1);
+      d.onclick = function() { self.goTo(i); };
+      dots.appendChild(d);
+    });
+    document.body.appendChild(dots);
+    this.dots = [].slice.call(dots.children);
+
+    var ctr = document.createElement('div');
+    ctr.className = 'deck-counter';
+    document.body.appendChild(ctr);
+    this.counter = ctr;
+
+    var hints = document.createElement('div');
+    hints.className = 'deck-hints';
+    hints.textContent = '\u2190 \u2192 or scroll to navigate';
+    document.body.appendChild(hints);
+    this.hints = hints;
+    this.hintTimer = setTimeout(function() { hints.classList.add('faded'); }, 4000);
+  }
+
+  bindEvents() {
+    var self = this;
+    document.addEventListener('keydown', function(e) {
+      if (e.target.closest('input, textarea, [contenteditable]')) return;
+      if (['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)) { e.preventDefault(); self.next(); }
+      else if (['ArrowUp','ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); self.prev(); }
+      else if (e.key === 'Home') { e.preventDefault(); self.goTo(0); }
+      else if (e.key === 'End') { e.preventDefault(); self.goTo(self.total - 1); }
+      self.fadeHints();
+    });
+
+    var touchY;
+    this.deck.addEventListener('touchstart', function(e) { touchY = e.touches[0].clientY; }, { passive: true });
+    this.deck.addEventListener('touchend', function(e) {
+      var dy = touchY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) > 50) dy > 0 ? self.next() : self.prev();
+    });
+  }
+
+  observe() {
+    var self = this;
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          self.current = self.slides.indexOf(entry.target);
+          self.update();
+        }
+      });
+    }, { threshold: 0.5 });
+    this.slides.forEach(function(s) { obs.observe(s); });
+  }
+
+  goTo(i) {
+    this.slides[Math.max(0, Math.min(i, this.total - 1))].scrollIntoView({ behavior: 'smooth' });
+  }
+  next() { if (this.current < this.total - 1) this.goTo(this.current + 1); }
+  prev() { if (this.current > 0) this.goTo(this.current - 1); }
+
+  update() {
+    this.bar.style.width = ((this.current + 1) / this.total * 100) + '%';
+    var self = this;
+    this.dots.forEach(function(d, i) { d.classList.toggle('active', i === self.current); });
+    this.counter.textContent = (this.current + 1) + ' / ' + this.total;
+  }
+
+  fadeHints() {
+    clearTimeout(this.hintTimer);
+    this.hints.classList.add('faded');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() { new SlideEngine(); });
+</script>
+
+</body>
+</html>
